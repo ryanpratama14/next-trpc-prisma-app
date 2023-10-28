@@ -6,13 +6,22 @@ import { serverClient } from "../_trpc/serverClient";
 
 export default function TodoClient() {
   const [filter, setFilter] = useState({
-    limit: 5,
+    limit: 1,
+    page: 1,
   });
 
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [error, setError] = useState<string[] | undefined>([]);
 
-  const { data, isLoading } = trpc.getUsers.useQuery();
+  const { data, isLoading } = trpc.getUsers.useQuery({
+    params: {
+      limit: filter.limit,
+      page: filter.page,
+    },
+  });
+
+  const totalPages = data ? Math.ceil(data.totalData / data.limit) : 0;
+
   const { data: user, isLoading: isLoadingUser } = trpc.getUserById.useQuery({
     userId: 5,
   });
@@ -43,28 +52,50 @@ export default function TodoClient() {
 
   return (
     <article className="flex items-center justify-center flex-col gap-4">
-      {/* {mutateUser.error?.data?.zodError ? (
-        <pre>
-          Error: {JSON.stringify(mutateUser.error.data.zodError, null, 2)}
-        </pre>
-      ) : null} */}
-
       <section className="flex flex-col gap-4">
         <h1>Users</h1>
         {isLoading ? (
           <p>Loading...</p>
         ) : (
-          data?.map((user) => {
-            return (
-              <section
-                key={user.id}
-                className="text-white bg-red-600 p-6 rounded-md flex flex-col gap-1"
+          <section className="flex flex-col gap-2">
+            {data?.data.map((user) => {
+              return (
+                <section
+                  key={user.id}
+                  className="text-white bg-red-600 p-6 rounded-md flex flex-col gap-1"
+                >
+                  <p>Name: {user?.name}</p>
+                  <p>Email: {user?.email}</p>
+                </section>
+              );
+            })}
+            <section className="flex gap-2">
+              <button
+                disabled={filter.page === 1}
+                onClick={() =>
+                  setFilter((prev) => ({
+                    ...prev,
+                    page: prev.page - 1,
+                  }))
+                }
+                type="button"
               >
-                <p>Name: {user?.name}</p>
-                <p>Email: {user?.email}</p>
-              </section>
-            );
-          })
+                Prev Page
+              </button>
+              <button
+                disabled={filter.page === totalPages}
+                onClick={() =>
+                  setFilter((prev) => ({
+                    ...prev,
+                    page: prev.page + 1,
+                  }))
+                }
+                type="button"
+              >
+                Next Page
+              </button>
+            </section>
+          </section>
         )}
 
         <h1>User ById</h1>

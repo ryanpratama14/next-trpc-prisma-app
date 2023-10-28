@@ -5,17 +5,42 @@ import { z } from "zod";
 import { schema } from "./schema";
 
 export const appRouter = router({
-  getUsers: publicProcedure.query(async ({ input }) => {
-    const res = await db.user.findMany();
-    if (!res) {
-      throw new TRPCError({
-        code: "NOT_FOUND",
-        message: "Not found",
-      });
-    }
+  getUsers: publicProcedure
+    .input(
+      z
+        .object({
+          params: z.object({
+            page: z.number().min(1),
+            limit: z.number().min(1),
+          }),
+        })
+        .optional()
+    )
+    .query(async ({ input }) => {
+      const limit = input?.params.limit ?? 1;
+      const page = input?.params.page ?? 1;
 
-    return res;
-  }),
+      const res = await db.user.findMany({
+        skip: (page - 1) * limit,
+        take: limit,
+      });
+
+      if (!res.length) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Not found",
+        });
+      }
+
+      const totalData = await db.user.findMany();
+
+      return {
+        data: res,
+        totalData: totalData.length,
+        limit: limit,
+        page: page,
+      };
+    }),
 
   getUserById: publicProcedure
     .input(
