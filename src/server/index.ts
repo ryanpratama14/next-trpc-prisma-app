@@ -3,7 +3,7 @@ import { publicProcedure, router } from "./trpc";
 import { z } from "zod";
 
 export const appRouter = router({
-  getTodos: publicProcedure
+  getUsers: publicProcedure
     .input(
       z
         .object({
