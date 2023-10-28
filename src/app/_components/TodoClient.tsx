@@ -2,6 +2,7 @@
 
 import { trpc } from "@/app/_trpc/client";
 import { useState } from "react";
+import { z } from "zod";
 
 type Response = {
   limit: number;
@@ -11,21 +12,30 @@ type Response = {
 };
 
 export default function TodoClient() {
-  const [limit, setLimit] = useState(5);
+  const [filter, setFilter] = useState({
+    limit: 5,
+  });
+
   const { data, isLoading } = trpc.getUsers.useQuery<Response>({
     params: {
-      limit: limit,
+      limit: filter.limit,
     },
   });
 
   console.log(data?.limit);
+
   return (
     <article>
       {isLoading ? "Loading..." : ""}
 
       <button
         className="px-6 py-2 rounded-md text-white bg-blue-700"
-        onClick={() => setLimit((prev) => prev + 5)}
+        onClick={() =>
+          setFilter((prev) => ({
+            ...prev,
+            limit: prev.limit + 5,
+          }))
+        }
       >
         Add Limit
       </button>
