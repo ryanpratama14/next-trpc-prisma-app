@@ -32,11 +32,9 @@ export const appRouter = router({
         });
       }
 
-      const totalData = await db.user.findMany();
-
       return {
         data: res,
-        totalData: totalData.length,
+        totalData: (await db.user.findMany()).length,
         limit: limit,
         page: page,
       };
