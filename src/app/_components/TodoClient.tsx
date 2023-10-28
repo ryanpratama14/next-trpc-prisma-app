@@ -3,12 +3,20 @@
 import { trpc } from "@/app/_trpc/client";
 import { useState } from "react";
 
+type Response = {
+  limit: number;
+  skip: number;
+  total: number;
+  users: User[];
+};
+
 export default function TodoClient() {
   const [limit, setLimit] = useState(5);
-  const { data, isLoading } = trpc.getTodos.useQuery({ limit: limit });
+  const { data, isLoading } = trpc.getTodos.useQuery<Response>({
+    limit: limit,
+  });
 
-  console.log(data?.users?.length);
-
+  console.log(data?.limit);
   return (
     <article>
       {isLoading ? "Loading..." : ""}
