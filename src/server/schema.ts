@@ -6,3 +6,4 @@ export class schema {
     email: z.string().email(),
   });
 }
+
