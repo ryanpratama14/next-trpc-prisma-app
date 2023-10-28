@@ -4,7 +4,7 @@ import TodoClient from "@/app/_components/TodoClient";
 export default function Home() {
   return (
     <div>
-      <Todo />
+      {/* <Todo /> */}
       <TodoClient />
     </div>
   );
