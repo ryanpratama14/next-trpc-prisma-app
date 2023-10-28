@@ -7,12 +7,16 @@ export const appRouter = router({
     .input(
       z
         .object({
-          limit: z.number().optional(),
+          params: z
+            .object({
+              limit: z.number().optional(),
+            })
+            .optional(),
         })
         .optional()
     )
     .query((option) => {
-      return getData("/users", option.input);
+      return getData("/users", option.input?.params);
     }),
 });
 

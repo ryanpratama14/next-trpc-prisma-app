@@ -11,7 +11,7 @@ const generateSearchParams = (url: string, params?: object) => {
       }
     }
   }
-
+  console.log(newUrl.toString());
   return newUrl.toString();
 };
 

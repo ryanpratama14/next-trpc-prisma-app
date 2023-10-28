@@ -13,7 +13,9 @@ type Response = {
 export default function TodoClient() {
   const [limit, setLimit] = useState(5);
   const { data, isLoading } = trpc.getUsers.useQuery<Response>({
-    limit: limit,
+    params: {
+      limit: limit,
+    },
   });
 
   console.log(data?.limit);
