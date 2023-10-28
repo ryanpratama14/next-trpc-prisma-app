@@ -1,24 +1,24 @@
 "use client";
 
 import { trpc } from "@/app/_trpc/client";
-import React, { Fragment, useEffect, useState } from "react";
-import { serverClient } from "../_trpc/serverClient";
+import React, { Fragment, useState } from "react";
+import { getUserType } from "@/server/schema";
+
+const initialFilter: getUserType = {
+  limit: 1,
+  page: 1,
+  search: "",
+};
 
 export default function TodoClient() {
-  const [filter, setFilter] = useState({
-    limit: 1,
-    page: 1,
+  const [filter, setFilter] = useState(initialFilter);
+
+  const { data, isLoading } = trpc.getUsers.useQuery({
+    params: filter,
   });
 
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [error, setError] = useState<string[] | undefined>([]);
-
-  const { data, isLoading } = trpc.getUsers.useQuery({
-    params: {
-      limit: filter.limit,
-      page: filter.page,
-    },
-  });
 
   const totalPages = data ? Math.ceil(data.totalData / data.limit) : 0;
 
@@ -71,7 +71,7 @@ export default function TodoClient() {
             })}
             <section className="flex gap-2">
               <button
-                disabled={filter.page === 1}
+                disabled={filter.page === 1 || data?.totalData === 0}
                 onClick={() =>
                   setFilter((prev) => ({
                     ...prev,
@@ -83,7 +83,7 @@ export default function TodoClient() {
                 Prev Page
               </button>
               <button
-                disabled={filter.page === totalPages}
+                disabled={filter.page === totalPages || data?.totalData === 0}
                 onClick={() =>
                   setFilter((prev) => ({
                     ...prev,

@@ -9,10 +9,7 @@ export const appRouter = router({
     .input(
       z
         .object({
-          params: z.object({
-            page: z.number().min(1),
-            limit: z.number().min(1),
-          }),
+          params: schema.getUser,
         })
         .optional()
     )
@@ -20,21 +17,32 @@ export const appRouter = router({
       const limit = input?.params.limit ?? 1;
       const page = input?.params.page ?? 1;
 
-      const res = await db.user.findMany({
+      const pagination = {
         skip: (page - 1) * limit,
         take: limit,
-      });
+      };
 
-      if (!res.length) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Not found",
-        });
-      }
+      const optionalQueries = {
+        where: {
+          name: {
+            contains: input?.params.search,
+          },
+        },
+      };
+
+      const res = await db.user.findMany({
+        ...pagination,
+        ...optionalQueries,
+      });
 
       return {
         data: res,
-        totalData: (await db.user.findMany()).length,
+        totalData:
+          (
+            await db.user.findMany({
+              ...optionalQueries,
+            })
+          ).length ?? 0,
         limit: limit,
         page: page,
       };
