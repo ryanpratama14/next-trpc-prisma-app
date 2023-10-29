@@ -4,18 +4,19 @@ import { trpc } from "@/app/_trpc/client";
 import React, { Fragment, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useDebounce } from "@uidotdev/usehooks";
+import { generateSearchParams } from "@/lib/utils";
 
 export default function TodoClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const filter = {
+  const [filter, setFilter] = useState({
     limit: searchParams.get("limit") ?? "1",
     page: searchParams.get("page") ?? "1",
     search: searchParams.get("search") ?? "",
-  };
+  });
 
-  const debouncedSearch = useDebounce(filter.search, 500);
+  const debouncedSearch = useDebounce(filter.search, 2000);
 
   const { data, isLoading } = trpc.getUsers.useQuery({
     params: {
@@ -59,14 +60,18 @@ export default function TodoClient() {
   };
 
   useEffect(() => {
-    if (debouncedSearch) {
-      router.push(`/?search=${debouncedSearch}}`);
-    }
-  }, [debouncedSearch, router]);
+    router.push(generateSearchParams(filter));
+  }, [filter, router]);
 
   return (
     <article className="flex items-center justify-center flex-col gap-4 min-h-screen">
       <input
+        onChange={(e) =>
+          setFilter((prev) => ({
+            ...prev,
+            search: e.target.value,
+          }))
+        }
         className="px-6 py-2 rounded-md border-2 border-gray-300 focus:outline-none"
         placeholder="Search user by name"
       />
@@ -90,9 +95,10 @@ export default function TodoClient() {
             <section className="flex gap-2">
               <button
                 onClick={() =>
-                  router.push(
-                    `/?page=${Number(filter.page) - 1}&limit=${filter.limit}`
-                  )
+                  setFilter((prev) => ({
+                    ...prev,
+                    page: (Number(prev.page) - 1).toString(),
+                  }))
                 }
                 disabled={Number(filter.page) === 1 || data?.totalData === 0}
                 type="button"
@@ -101,9 +107,10 @@ export default function TodoClient() {
               </button>
               <button
                 onClick={() =>
-                  router.push(
-                    `/?page=${Number(filter.page) + 1}&limit=${filter.limit}`
-                  )
+                  setFilter((prev) => ({
+                    ...prev,
+                    page: (Number(prev.page) + 1).toString(),
+                  }))
                 }
                 disabled={
                   Number(filter.page) === totalPages || data?.totalData === 0
