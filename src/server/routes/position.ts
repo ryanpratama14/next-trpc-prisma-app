@@ -2,7 +2,6 @@ import { db } from "#/prisma/client";
 import { schema } from "@/server/schema";
 import { publicProcedure, router } from "@/server/trpc";
 import { TRPCError } from "@trpc/server";
-import z from "zod";
 
 export const positionRouter = router({
   create: publicProcedure

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Provider from "./_trpc/Provider";
+import Provider from "@/app/_trpc/Provider";
 
 export const metadata: Metadata = {
   title: "Next App with tRPC example",

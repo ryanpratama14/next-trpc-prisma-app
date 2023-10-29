@@ -1,7 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { publicProcedure, router } from "@/server/trpc";
 import { db } from "#/prisma/client";
-import { z } from "zod";
 import { schema } from "@/server/schema";
 
 export const userRouter = router({
@@ -48,7 +47,7 @@ export const userRouter = router({
       },
     };
 
-    const res = await db.user.findMany({
+    const data = await db.user.findMany({
       ...pagination,
       ...optionalQueries,
     });
@@ -60,7 +59,7 @@ export const userRouter = router({
     ).length;
 
     return {
-      data: res,
+      data: data,
       limit: limit,
       page: page,
       totalData: totalData,
@@ -69,40 +68,40 @@ export const userRouter = router({
   }),
 
   detail: publicProcedure.input(schema.user.detail).query(async ({ input }) => {
-    const res = await db.user.findUnique({
+    const data = await db.user.findUnique({
       where: {
         id: input.id,
       },
     });
 
-    if (!res) {
+    if (!data) {
       throw new TRPCError({
         code: "NOT_FOUND",
         message: "User not found",
       });
     }
 
-    return res;
+    return data;
   }),
 
   update: publicProcedure
     .input(schema.user.update)
     .mutation(async ({ input }) => {
       const { id, body } = input;
-      const user = await db.user.findUnique({
+      const data = await db.user.findUnique({
         where: {
           id: id,
         },
       });
 
-      if (!user) {
+      if (!data) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "User not found",
         });
       }
 
-      const updatedUser = await db.user.update({
+      const updatedData = await db.user.update({
         where: {
           id: id,
         },
@@ -112,7 +111,7 @@ export const userRouter = router({
         },
       });
 
-      return updatedUser;
+      return updatedData;
     }),
 
   delete: publicProcedure
