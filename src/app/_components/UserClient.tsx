@@ -1,7 +1,7 @@
 "use client";
 
 import { trpc } from "@/app/_trpc/client";
-import React, { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createUrl } from "@/lib/utils";
 
@@ -17,7 +17,7 @@ export default function TodoClient() {
 
   const search = searchParams.get("q") ?? "";
 
-  const { data, isLoading } = trpc.getUsers.useQuery({
+  const { data, isLoading } = trpc.user.list.useQuery({
     params: {
       limit: 1,
       page: parseInt(page),
@@ -30,8 +30,8 @@ export default function TodoClient() {
 
   const totalPages = data ? Math.ceil(data.totalData / data.limit) : 0;
 
-  const { data: user, isLoading: isLoadingUser } = trpc.getUserById.useQuery({
-    userId: 5,
+  const { data: user, isLoading: isLoadingUser } = trpc.user.detail.useQuery({
+    userId: 6,
   });
 
   const [userById, setUserById] = useState<{
@@ -44,13 +44,19 @@ export default function TodoClient() {
     email: "",
   });
 
-  const mutateUser = trpc.putUserById.useMutation({
+  const { mutate } = trpc.user.update.useMutation({
     onSuccess: (res) => {
       alert(JSON.stringify(res));
       setIsEdit(false);
     },
     onError: (error) => {
       setError(error?.data?.zodError?.fieldErrors?.body);
+    },
+  });
+
+  const { mutate: deleteUser } = trpc.user.delete.useMutation({
+    onSuccess: ({ message }) => {
+      alert(message);
     },
   });
 
@@ -106,6 +112,9 @@ export default function TodoClient() {
                 >
                   <p>Name: {user?.name}</p>
                   <p>Email: {user?.email}</p>
+                  <button onClick={() => deleteUser({ userId: user.id })}>
+                    Delete user
+                  </button>
                 </section>
               );
             })}
@@ -153,7 +162,7 @@ export default function TodoClient() {
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
-                  mutateUser.mutate({
+                  mutate({
                     userId: userById.id,
                     body: {
                       name: userById.name,

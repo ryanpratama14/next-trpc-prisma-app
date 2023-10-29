@@ -11,7 +11,7 @@ const initialData = {
 export default function AddUser() {
   const [data, setData] = useState(initialData);
 
-  const { mutate } = trpc.createUser.useMutation({
+  const { mutate } = trpc.user.create.useMutation({
     onSuccess: () => {
       setData(initialData);
       alert("User created");
