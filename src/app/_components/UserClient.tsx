@@ -83,10 +83,10 @@ export default function TodoClient() {
         }}
       >
         <input
-          key={searchParams?.get("q")}
+          key={search}
           name="search"
           autoComplete="off"
-          defaultValue={searchParams?.get("q") || ""}
+          defaultValue={search}
           className="px-6 py-2 rounded-md border-2 border-gray-300 focus:outline-none"
           placeholder="Search user by name"
         />
