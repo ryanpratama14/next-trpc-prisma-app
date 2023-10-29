@@ -7,6 +7,7 @@ import { createUrl } from "@/lib/utils";
 
 export default function TodoClient() {
   const router = useRouter();
+  // const trpcUtils = trpc.useUtils();
   const searchParams = useSearchParams();
   const newParams = useMemo(
     () => new URLSearchParams(searchParams.toString()),
@@ -57,6 +58,7 @@ export default function TodoClient() {
   const { mutate: deleteUser } = trpc.user.delete.useMutation({
     onSuccess: ({ message }) => {
       alert(message);
+      // trpcUtils.user.list.invalidate();
     },
   });
 
