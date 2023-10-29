@@ -112,9 +112,9 @@ export default function TodoClient() {
             <section className="flex gap-2">
               <button
                 onClick={() => {
-                  const prevPage = (parseInt(page) - 1).toString();
+                  const prevPage = (Number(page) - 1).toString();
 
-                  if (prevPage === "1") {
+                  if (Number(prevPage) === 1) {
                     newParams.delete("page");
                   } else newParams.set("page", prevPage);
 
@@ -127,7 +127,7 @@ export default function TodoClient() {
               </button>
               <button
                 onClick={() => {
-                  const nextPage = (parseInt(page) + 1).toString();
+                  const nextPage = (Number(page) + 1).toString();
                   newParams.set("page", nextPage);
                   router.push(createUrl("/", newParams));
                 }}
