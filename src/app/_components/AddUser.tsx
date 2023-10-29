@@ -2,14 +2,17 @@
 
 import { useState } from "react";
 import { trpc } from "../_trpc/client";
+import { UserType } from "@/server/schema";
 
-const initialData = {
+const initialData: UserType = {
   name: "",
   email: "",
+  positionId: undefined,
 };
 
 export default function AddUser() {
   const [data, setData] = useState(initialData);
+  const { data: positions } = trpc.position.list.useQuery();
 
   const { mutate } = trpc.user.create.useMutation({
     onSuccess: () => {
@@ -23,10 +26,15 @@ export default function AddUser() {
     },
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
     setData({
       ...data,
-      [e.target.name]: e.target.value,
+      [name]: name !== "positionId" ? value : parseInt(value),
     });
   };
 
@@ -56,6 +64,19 @@ export default function AddUser() {
           type="email"
           onChange={handleChange}
         />
+        <select
+          onChange={handleChange}
+          name="positionId"
+          value={data.positionId || undefined}
+        >
+          {positions?.map((position) => {
+            return (
+              <option key={position.id} value={position.id}>
+                {position.name}
+              </option>
+            );
+          })}
+        </select>
         <button type="submit" className="w-full py-2 bg-green-500 text-white">
           Add
         </button>

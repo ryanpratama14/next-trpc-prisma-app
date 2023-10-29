@@ -1,9 +1,10 @@
 "use client";
 
 import { trpc } from "@/app/_trpc/client";
-import { Fragment, useEffect, useMemo, useState } from "react";
+import React, { Fragment, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createUrl } from "@/lib/utils";
+import { UserType } from "@/server/schema";
 
 export default function TodoClient() {
   const router = useRouter();
@@ -35,15 +36,15 @@ export default function TodoClient() {
     id: 6,
   });
 
-  const [userById, setUserById] = useState<{
-    id: number;
-    name: string;
-    email: string;
-  }>({
-    id: 0,
+  const { data: positions } = trpc.position.list.useQuery();
+
+  const [userById, setUserById] = useState<UserType>({
     name: "",
     email: "",
+    positionId: undefined,
   });
+
+  const [userId, setUserId] = useState<number>(0);
 
   const { mutate } = trpc.user.update.useMutation({
     onSuccess: (res) => {
@@ -62,7 +63,11 @@ export default function TodoClient() {
     },
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLSelectElement>
+  ) => {
     setUserById({ ...userById, [e.target.name]: e.target.value });
   };
 
@@ -166,7 +171,7 @@ export default function TodoClient() {
                 onSubmit={(e) => {
                   e.preventDefault();
                   mutate({
-                    id: userById.id,
+                    id: userId,
                     body: {
                       name: userById.name,
                       email: userById.email,
@@ -176,19 +181,34 @@ export default function TodoClient() {
                 className="flex flex-col gap-2"
               >
                 <input
+                  placeholder="Name"
                   onChange={handleChange}
                   name="name"
-                  value={userById?.name}
+                  value={userById.name}
                   type="text"
                   className="text-black"
                 />
                 <input
+                  placeholder="Email"
                   onChange={handleChange}
                   name="email"
-                  value={userById?.email}
+                  value={userById.email}
                   type="email"
                   className="text-black"
                 />
+                <select
+                  onChange={handleChange}
+                  name="positionId"
+                  value={userById.positionId || undefined}
+                >
+                  {positions?.map((position) => {
+                    return (
+                      <option key={position.id} value={position.id}>
+                        {position.name}
+                      </option>
+                    );
+                  })}
+                </select>
 
                 <button
                   className="px-6 py-2 rounded-md bg-blue-600"
@@ -204,10 +224,11 @@ export default function TodoClient() {
                   onClick={() => {
                     setIsEdit(true);
                     if (user) {
+                      setUserId(user.id);
                       setUserById({
                         name: user.name,
                         email: user.email,
-                        id: user.id,
+                        positionId: user.positionId,
                       });
                     }
                   }}
@@ -215,6 +236,7 @@ export default function TodoClient() {
                   Edit User
                 </button>
                 <p>Name: {user?.name}</p>
+                <p>Position: {user?.position?.name}</p>
                 <p>Email: {user?.email}</p>
               </Fragment>
             )}

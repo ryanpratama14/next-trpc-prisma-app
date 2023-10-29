@@ -7,6 +7,7 @@ export class schema {
         params: z.object({
           page: z.number().min(1),
           limit: z.number().min(1),
+          positionId: z.number().optional(),
           search: z.string().optional(),
         }),
       })
@@ -15,6 +16,7 @@ export class schema {
     static create = z.object({
       name: z.string().min(4),
       email: z.string().email(),
+      positionId: z.number().nullish(),
     });
 
     static detail = z.object({
@@ -50,3 +52,6 @@ export class schema {
     });
   };
 }
+
+export type UserType = z.infer<typeof schema.user.create>;
+export type PositionType = z.infer<typeof schema.position.create>;

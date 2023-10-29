@@ -4,6 +4,10 @@ import { publicProcedure, router } from "@/server/trpc";
 import { TRPCError } from "@trpc/server";
 
 export const positionRouter = router({
+  list: publicProcedure.query(async () => {
+    return await db.position.findMany();
+  }),
+
   create: publicProcedure
     .input(schema.position.create)
     .mutation(async ({ input }) => {

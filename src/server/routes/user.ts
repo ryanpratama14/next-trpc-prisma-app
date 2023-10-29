@@ -44,6 +44,7 @@ export const userRouter = router({
         name: {
           contains: input?.params.search,
         },
+        positionId: input?.params.positionId,
       },
     };
 
@@ -74,6 +75,9 @@ export const userRouter = router({
     const data = await db.user.findUnique({
       where: {
         id: input.id,
+      },
+      include: {
+        position: true,
       },
     });
 
