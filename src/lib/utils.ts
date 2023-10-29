@@ -1,3 +1,5 @@
+import { ReadonlyURLSearchParams } from "next/navigation";
+
 export const LoadToTop = () => {
   window.scrollTo({
     top: 0,
@@ -24,4 +26,14 @@ export const generateSearchParams = (params: object) => {
   }
   const paramString = searchParams.size !== 0 ? `?${searchParams}` : "";
   return paramString.toString();
+};
+
+export const createUrl = (
+  pathname: string,
+  params: URLSearchParams | ReadonlyURLSearchParams
+) => {
+  const paramsString = params.toString();
+  const queryString = `${paramsString.length ? "?" : ""}${paramsString}`;
+
+  return `${pathname}${queryString}`;
 };

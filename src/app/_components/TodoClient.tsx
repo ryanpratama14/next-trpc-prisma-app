@@ -1,28 +1,24 @@
 "use client";
 
 import { trpc } from "@/app/_trpc/client";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useDebounce } from "@uidotdev/usehooks";
-import { generateSearchParams } from "@/lib/utils";
+import { createUrl } from "@/lib/utils";
 
 export default function TodoClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const newParams = new URLSearchParams(searchParams.toString());
 
-  const [filter, setFilter] = useState({
-    limit: searchParams.get("limit") ?? "1",
-    page: searchParams.get("page") ?? "1",
-    search: searchParams.get("search") ?? "",
-  });
-
-  const debouncedSearch = useDebounce(filter.search, 2000);
+  const page = searchParams.get("page") ?? "1";
+  const search = searchParams.get("q") ?? "";
 
   const { data, isLoading } = trpc.getUsers.useQuery({
     params: {
-      limit: parseInt(filter.limit),
-      page: parseInt(filter.page),
-      search: debouncedSearch,
+      limit: 1,
+      page: parseInt(page),
+      search: search,
     },
   });
 
@@ -59,22 +55,33 @@ export default function TodoClient() {
     setUserById({ ...userById, [e.target.name]: e.target.value });
   };
 
-  useEffect(() => {
-    router.push(generateSearchParams(filter));
-  }, [filter, router]);
-
   return (
     <article className="flex items-center justify-center flex-col gap-4 min-h-screen">
-      <input
-        onChange={(e) =>
-          setFilter((prev) => ({
-            ...prev,
-            search: e.target.value,
-          }))
-        }
-        className="px-6 py-2 rounded-md border-2 border-gray-300 focus:outline-none"
-        placeholder="Search user by name"
-      />
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          const val = e.target as HTMLFormElement;
+          const search = val.search as HTMLInputElement;
+
+          if (search.value) {
+            newParams.set("q", search.value);
+          } else {
+            newParams.delete("q");
+          }
+          newParams.delete("page");
+          router.push(createUrl("/", newParams));
+        }}
+      >
+        <input
+          key={searchParams?.get("q")}
+          name="search"
+          autoComplete="off"
+          defaultValue={searchParams?.get("q") || ""}
+          className="px-6 py-2 rounded-md border-2 border-gray-300 focus:outline-none"
+          placeholder="Search user by name"
+        />
+      </form>
+
       <section className="flex flex-col gap-4">
         <h1>Users</h1>
         {isLoading ? (
@@ -94,27 +101,21 @@ export default function TodoClient() {
             })}
             <section className="flex gap-2">
               <button
-                onClick={() =>
-                  setFilter((prev) => ({
-                    ...prev,
-                    page: (Number(prev.page) - 1).toString(),
-                  }))
-                }
-                disabled={Number(filter.page) === 1 || data?.totalData === 0}
+                onClick={() => {
+                  newParams.set("page", (parseInt(page) - 1).toString());
+                  router.push(createUrl("/", newParams));
+                }}
+                disabled={Number(page) === 1 || data?.totalData === 0}
                 type="button"
               >
                 Prev Page
               </button>
               <button
-                onClick={() =>
-                  setFilter((prev) => ({
-                    ...prev,
-                    page: (Number(prev.page) + 1).toString(),
-                  }))
-                }
-                disabled={
-                  Number(filter.page) === totalPages || data?.totalData === 0
-                }
+                onClick={() => {
+                  newParams.set("page", (parseInt(page) + 1).toString());
+                  router.push(createUrl("/", newParams));
+                }}
+                disabled={Number(page) === totalPages || data?.totalData === 0}
                 type="button"
               >
                 Next Page
