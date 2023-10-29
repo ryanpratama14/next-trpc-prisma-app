@@ -26,8 +26,6 @@ export default function TodoClient() {
     },
   });
 
-  console.log(data);
-
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [error, setError] = useState<string[] | undefined>([]);
 
@@ -115,6 +113,7 @@ export default function TodoClient() {
                   className="text-white bg-red-600 p-6 rounded-md flex flex-col gap-1"
                 >
                   <p>Name: {user?.name}</p>
+                  <p>Position: {user?.position?.name}</p>
                   <p>Email: {user?.email}</p>
                   <button onClick={() => deleteUser({ id: user.id })}>
                     Delete user

@@ -50,6 +50,9 @@ export const userRouter = router({
     const data = await db.user.findMany({
       ...pagination,
       ...optionalQueries,
+      include: {
+        position: true,
+      },
     });
 
     const totalData = (
