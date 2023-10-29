@@ -13,7 +13,8 @@ export default function TodoClient() {
     [searchParams]
   );
 
-  const page = Math.abs(Number(searchParams.get("page"))).toString() ?? "1";
+  const page = searchParams.get("page") ?? "1";
+
   const search = searchParams.get("q") ?? "";
 
   const { data, isLoading } = trpc.getUsers.useQuery({
@@ -56,6 +57,13 @@ export default function TodoClient() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserById({ ...userById, [e.target.name]: e.target.value });
   };
+
+  useEffect(() => {
+    if (Number(page) < 1 || (data && !data.data.length)) {
+      newParams.delete("page");
+      router.push(createUrl("/", newParams));
+    }
+  }, [newParams, router, page, data]);
 
   return (
     <article className="flex items-center justify-center flex-col gap-4 min-h-screen">

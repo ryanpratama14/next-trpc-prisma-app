@@ -46,7 +46,7 @@ export const appRouter = router({
         limit: limit,
         page: page,
         totalData: totalData,
-        totalPage: Math.ceil(totalData / limit),
+        totalPage: Math.ceil(totalData / limit) || 1,
       };
     }),
 
