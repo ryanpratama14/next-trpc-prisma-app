@@ -11,12 +11,21 @@ datasource db {
 }
 
 model User {
-  id           Int      @id @default(autoincrement()) // unique
-  email        String   @unique // unique
+  id           Int       @id @default(autoincrement()) // unique
+  email        String    @unique // unique
   name         String
-  followers    Int      @default(0)
-  isActive     Boolean  @default(true)
+  followers    Int       @default(0)
+  isActive     Boolean   @default(true)
+  registeredAt DateTime  @default(now())
+  position     Position? @relation(fields: [positionId], references: [id])
+  positionId   Int?
+}
+
+model Position {
+  id           Int      @id @default(autoincrement())
+  name         String   @unique
   registeredAt DateTime @default(now())
+  User         User[]
 }
 
 model Product {

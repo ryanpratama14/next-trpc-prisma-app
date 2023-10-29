@@ -26,13 +26,15 @@ export default function TodoClient() {
     },
   });
 
+  console.log(data);
+
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [error, setError] = useState<string[] | undefined>([]);
 
   const totalPages = data ? Math.ceil(data.totalData / data.limit) : 0;
 
   const { data: user, isLoading: isLoadingUser } = trpc.user.detail.useQuery({
-    userId: 6,
+    id: 6,
   });
 
   const [userById, setUserById] = useState<{
@@ -114,7 +116,7 @@ export default function TodoClient() {
                 >
                   <p>Name: {user?.name}</p>
                   <p>Email: {user?.email}</p>
-                  <button onClick={() => deleteUser({ userId: user.id })}>
+                  <button onClick={() => deleteUser({ id: user.id })}>
                     Delete user
                   </button>
                 </section>
@@ -165,7 +167,7 @@ export default function TodoClient() {
                 onSubmit={(e) => {
                   e.preventDefault();
                   mutate({
-                    userId: userById.id,
+                    id: userById.id,
                     body: {
                       name: userById.name,
                       email: userById.email,

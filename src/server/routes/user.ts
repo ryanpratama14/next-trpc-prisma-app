@@ -6,80 +6,72 @@ import { schema } from "@/server/schema";
 
 export const userRouter = router({
   create: publicProcedure
-    .input(schema.user.mutation)
+    .input(schema.user.create)
     .mutation(async ({ input }) => {
-      const isUserExists = await db.user.findUnique({
+      const isExist = await db.user.findUnique({
         where: {
           email: input.email,
         },
       });
 
-      if (isUserExists) {
+      if (isExist) {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "User already exists",
         });
       }
 
-      const newUser = await db.user.create({
+      const newData = await db.user.create({
         data: {
           name: input.name,
           email: input.email,
         },
       });
 
-      return newUser;
+      return newData;
     }),
 
-  list: publicProcedure
-    .input(
-      z
-        .object({
-          params: schema.user.list,
-        })
-        .optional()
-    )
-    .query(async ({ input }) => {
-      const limit = input?.params.limit ?? 1;
-      const page = input?.params.page ?? 1;
+  list: publicProcedure.input(schema.user.list).query(async ({ input }) => {
+    const limit = input?.params.limit ?? 1;
+    const page = input?.params.page ?? 1;
 
-      const pagination = {
-        skip: (page - 1) * limit,
-        take: limit,
-      };
+    const pagination = {
+      skip: (page - 1) * limit,
+      take: limit,
+    };
 
-      const optionalQueries = {
-        where: {
-          name: {
-            contains: input?.params.search,
-          },
+    const optionalQueries = {
+      where: {
+        name: {
+          contains: input?.params.search,
         },
-      };
+      },
+    };
 
-      const res = await db.user.findMany({
-        ...pagination,
+    const res = await db.user.findMany({
+      ...pagination,
+      ...optionalQueries,
+    });
+
+    const totalData = (
+      await db.user.findMany({
         ...optionalQueries,
-      });
+      })
+    ).length;
 
-      const totalData = (
-        await db.user.findMany({
-          ...optionalQueries,
-        })
-      ).length;
-
-      return {
-        data: res,
-        limit: limit,
-        page: page,
-        totalData: totalData,
-        totalPage: Math.ceil(totalData / limit) || 1,
-      };
-    }),
+    return {
+      data: res,
+      limit: limit,
+      page: page,
+      totalData: totalData,
+      totalPage: Math.ceil(totalData / limit) || 1,
+    };
+  }),
 
   detail: publicProcedure.input(schema.user.detail).query(async ({ input }) => {
     const res = await db.user.findUnique({
       where: {
-        id: input.userId,
+        id: input.id,
       },
     });
 
@@ -94,17 +86,12 @@ export const userRouter = router({
   }),
 
   update: publicProcedure
-    .input(
-      z.object({
-        userId: z.number(),
-        body: schema.user.mutation,
-      })
-    )
+    .input(schema.user.update)
     .mutation(async ({ input }) => {
-      const { userId, body } = input;
+      const { id, body } = input;
       const user = await db.user.findUnique({
         where: {
-          id: userId,
+          id: id,
         },
       });
 
@@ -117,7 +104,7 @@ export const userRouter = router({
 
       const updatedUser = await db.user.update({
         where: {
-          id: userId,
+          id: id,
         },
         data: {
           name: body.name,
@@ -133,7 +120,7 @@ export const userRouter = router({
     .mutation(async ({ input }) => {
       const user = await db.user.findUnique({
         where: {
-          id: input.userId,
+          id: input.id,
         },
       });
 
@@ -146,12 +133,12 @@ export const userRouter = router({
 
       await db.user.delete({
         where: {
-          id: input.userId,
+          id: input.id,
         },
       });
 
       return {
-        message: `"${user.name}" has been deleted`,
+        message: `User has been deleted`,
       };
     }),
 });
