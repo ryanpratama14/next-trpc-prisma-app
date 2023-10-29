@@ -8,6 +8,9 @@ const handler = (req: Request) =>
     req,
     router: appRouter,
     createContext: () => ({}),
+    onError: ({ error }) => {
+      console.log("Error: " + error.message);
+    },
   });
 
 export { handler as GET, handler as POST };

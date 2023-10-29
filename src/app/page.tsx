@@ -1,11 +1,13 @@
-import Todo from "@/app/_components/Todo";
-import TodoClient from "@/app/_components/TodoClient";
+// import UserServer from "@/app/_components/UserServer";
+import UserClient from "@/app/_components/UserClient";
+import AddUser from "@/app/_components/AddUser";
 
 export default function Home() {
   return (
     <div>
-      {/* <Todo /> */}
-      <TodoClient />
+      <AddUser />
+      {/* <UserServer /> */}
+      <UserClient />
     </div>
   );
 }

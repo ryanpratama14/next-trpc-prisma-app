@@ -5,6 +5,32 @@ import { z } from "zod";
 import { schema } from "./schema";
 
 export const appRouter = router({
+  createUser: publicProcedure
+    .input(schema.putUser)
+    .mutation(async ({ input }) => {
+      const isUserExists = await db.user.findUnique({
+        where: {
+          email: input.email,
+        },
+      });
+
+      if (isUserExists) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "User already exists",
+        });
+      }
+
+      const newUser = await db.user.create({
+        data: {
+          name: input.name,
+          email: input.email,
+        },
+      });
+
+      return newUser;
+    }),
+
   getUsers: publicProcedure
     .input(
       z
