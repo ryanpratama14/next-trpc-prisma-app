@@ -35,16 +35,18 @@ export const appRouter = router({
         ...optionalQueries,
       });
 
+      const totalData = (
+        await db.user.findMany({
+          ...optionalQueries,
+        })
+      ).length;
+
       return {
         data: res,
-        totalData:
-          (
-            await db.user.findMany({
-              ...optionalQueries,
-            })
-          ).length ?? 0,
         limit: limit,
         page: page,
+        totalData: totalData,
+        totalPage: Math.ceil(totalData / limit),
       };
     }),
 

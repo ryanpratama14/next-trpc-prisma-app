@@ -16,18 +16,6 @@ export const getBaseUrl = (): string => {
   return `http://localhost:${process.env.PORT ?? 3000}`;
 };
 
-export const generateSearchParams = (params: object) => {
-  const searchParams = new URLSearchParams();
-  for (const key of Object.keys(params)) {
-    const value = (params as any)[key];
-    if (value) {
-      searchParams.append(key, value);
-    }
-  }
-  const paramString = searchParams.size !== 0 ? `?${searchParams}` : "";
-  return paramString.toString();
-};
-
 export const createUrl = (
   pathname: string,
   params: URLSearchParams | ReadonlyURLSearchParams

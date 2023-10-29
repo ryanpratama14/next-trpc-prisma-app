@@ -1,17 +1,19 @@
 "use client";
 
 import { trpc } from "@/app/_trpc/client";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useDebounce } from "@uidotdev/usehooks";
 import { createUrl } from "@/lib/utils";
 
 export default function TodoClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const newParams = new URLSearchParams(searchParams.toString());
+  const newParams = useMemo(
+    () => new URLSearchParams(searchParams.toString()),
+    [searchParams]
+  );
 
-  const page = searchParams.get("page") ?? "1";
+  const page = Math.abs(Number(searchParams.get("page"))).toString() ?? "1";
   const search = searchParams.get("q") ?? "";
 
   const { data, isLoading } = trpc.getUsers.useQuery({
@@ -102,7 +104,12 @@ export default function TodoClient() {
             <section className="flex gap-2">
               <button
                 onClick={() => {
-                  newParams.set("page", (parseInt(page) - 1).toString());
+                  const prevPage = (parseInt(page) - 1).toString();
+
+                  if (prevPage === "1") {
+                    newParams.delete("page");
+                  } else newParams.set("page", prevPage);
+
                   router.push(createUrl("/", newParams));
                 }}
                 disabled={Number(page) === 1 || data?.totalData === 0}
@@ -112,15 +119,20 @@ export default function TodoClient() {
               </button>
               <button
                 onClick={() => {
-                  newParams.set("page", (parseInt(page) + 1).toString());
+                  const nextPage = (parseInt(page) + 1).toString();
+                  newParams.set("page", nextPage);
                   router.push(createUrl("/", newParams));
                 }}
-                disabled={Number(page) === totalPages || data?.totalData === 0}
+                disabled={Number(page) >= totalPages || data?.totalData === 0}
                 type="button"
               >
                 Next Page
               </button>
             </section>
+
+            <p>
+              Page {page} / {data?.totalPage}
+            </p>
           </section>
         )}
 
