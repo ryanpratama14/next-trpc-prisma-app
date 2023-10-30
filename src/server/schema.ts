@@ -53,5 +53,7 @@ export class schema {
   };
 }
 
-export type UserType = z.infer<typeof schema.user.create>;
-export type PositionType = z.infer<typeof schema.position.create>;
+const { user, position } = schema;
+
+export type UserType = z.infer<typeof user.create>;
+export type PositionType = z.infer<typeof position.create>;

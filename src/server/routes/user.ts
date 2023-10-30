@@ -62,12 +62,14 @@ export const userRouter = router({
       })
     ).length;
 
+    const totalPage = Math.ceil(totalData / limit) || 1;
+
     return {
-      data: data,
-      limit: limit,
-      page: page,
-      totalData: totalData,
-      totalPage: Math.ceil(totalData / limit) || 1,
+      data,
+      limit,
+      page,
+      totalData,
+      totalPage,
     };
   }),
 

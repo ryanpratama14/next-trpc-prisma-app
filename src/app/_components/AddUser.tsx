@@ -50,6 +50,7 @@ export default function AddUser() {
         <h1>Add User</h1>
         <input
           required
+          placeholder="Name"
           value={data.name}
           className="px-4 py-2 rounded-md"
           name="name"
@@ -58,6 +59,7 @@ export default function AddUser() {
         />
         <input
           required
+          placeholder="Email"
           value={data.email}
           className="px-4 py-2 rounded-md"
           name="email"
