@@ -37,3 +37,17 @@ export const removeFieldsFromArray = <
     return updatedObj;
   });
 };
+
+export const removeFieldsFromObject = <
+  T extends Record<string, any>,
+  K extends keyof T
+>(
+  object: T,
+  fieldsToRemove: K[]
+): Omit<T, K> => {
+  const updatedObj = { ...object };
+  for (const field of fieldsToRemove) {
+    delete updatedObj[field];
+  }
+  return updatedObj;
+};

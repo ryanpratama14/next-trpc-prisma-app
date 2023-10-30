@@ -36,6 +36,8 @@ export default function TodoClient() {
     id: 12,
   });
 
+  console.log(user, data);
+
   const { data: positions } = trpc.position.list.useQuery();
 
   const [userById, setUserById] = useState<UserType>({

@@ -2,7 +2,6 @@ import { TRPCError } from "@trpc/server";
 import { publicProcedure, router } from "@/server/trpc";
 import { db } from "#/prisma/client";
 import { schema } from "@/server/schema";
-import { prismaExclude, removeFieldsFromArray } from "@/server/helper";
 
 export const userRouter = router({
   create: publicProcedure
@@ -65,10 +64,8 @@ export const userRouter = router({
 
     const totalPage = Math.ceil(totalData / limit) || 1;
 
-    const updatedData = removeFieldsFromArray(data, ["registeredAt"]);
-
     return {
-      data: updatedData,
+      data,
       limit,
       page,
       totalData,
