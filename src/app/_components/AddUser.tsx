@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { trpc } from "../_trpc/client";
+import { trpc } from "@/app/_trpc/client";
 import { UserType } from "@/server/schema";
 
 const initialData: UserType = {
@@ -20,7 +20,7 @@ export default function AddUser() {
       alert("User created");
     },
     onError: (error) => {
-      console.log(error);
+      console.log(error.message);
       setData(initialData);
       alert("User already exists");
     },

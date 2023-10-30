@@ -8,8 +8,8 @@ const handler = (req: Request) =>
     req,
     router: appRouter,
     createContext: () => ({}),
-    onError: ({ error }) => {
-      console.log("Error: " + error.message);
+    onError: (error) => {
+      console.log("Error: " + JSON.stringify(error));
     },
   });
 

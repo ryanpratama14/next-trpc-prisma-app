@@ -33,7 +33,7 @@ export default function TodoClient() {
   const totalPages = data ? Math.ceil(data.totalData / data.limit) : 0;
 
   const { data: user, isLoading: isLoadingUser } = trpc.user.detail.useQuery({
-    id: 6,
+    id: 12,
   });
 
   const { data: positions } = trpc.position.list.useQuery();
