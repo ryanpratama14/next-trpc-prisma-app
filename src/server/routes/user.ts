@@ -24,6 +24,7 @@ export const userRouter = router({
         data: {
           name: input.name,
           email: input.email,
+          positionId: input.positionId,
         },
       });
 
@@ -117,6 +118,7 @@ export const userRouter = router({
         data: {
           name: body.name,
           email: body.email,
+          positionId: body.positionId,
         },
       });
 
