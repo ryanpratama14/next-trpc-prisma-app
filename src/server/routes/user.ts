@@ -2,6 +2,7 @@ import { TRPCError } from "@trpc/server";
 import { publicProcedure, router } from "@/server/trpc";
 import { db } from "#/prisma/client";
 import { schema } from "@/server/schema";
+import { generateEndDate, generateStartDate } from "@/lib/utils";
 
 export const userRouter = router({
   create: publicProcedure
@@ -32,8 +33,8 @@ export const userRouter = router({
     }),
 
   list: publicProcedure.input(schema.user.list).query(async ({ input }) => {
-    const limit = input?.params.limit ?? 1;
-    const page = input?.params.page ?? 1;
+    const limit = input.limit ?? 1;
+    const page = input.page ?? 1;
 
     const pagination = {
       skip: (page - 1) * limit,
@@ -41,20 +42,40 @@ export const userRouter = router({
     };
 
     const optionalQueries = {
+      include: {
+        position: true,
+      },
       where: {
         name: {
-          contains: input?.params.search,
+          contains: input?.params?.name,
         },
-        positionId: input?.params.positionId,
+        isActive: input?.params?.isActive,
+        registeredAt: {
+          gte:
+            input.params?.registeredAt &&
+            generateStartDate(input.params.registeredAt),
+
+          lte:
+            input?.params?.registeredAt &&
+            generateEndDate(input.params.registeredAt),
+        },
+        email: {
+          contains: input?.params?.email,
+        },
+        followers: {
+          gte: input?.params?.followers,
+        },
+        position: {
+          name: {
+            contains: input?.params?.positionName,
+          },
+        },
       },
     };
 
     const data = await db.user.findMany({
       ...pagination,
       ...optionalQueries,
-      include: {
-        position: true,
-      },
     });
 
     const totalData = (
@@ -119,6 +140,10 @@ export const userRouter = router({
           name: body.name,
           email: body.email,
           positionId: body.positionId,
+          registeredAt:
+            body.registeredAt !== data.registeredAt.toString()
+              ? new Date(body.registeredAt)
+              : data.registeredAt,
         },
       });
 

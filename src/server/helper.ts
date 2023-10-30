@@ -1,4 +1,5 @@
 import { Prisma } from "@prisma/client";
+import { z } from "zod";
 
 type A<T extends string> = T extends `${infer U}ScalarFieldEnum` ? U : never;
 type Entity = A<keyof typeof Prisma>;
@@ -50,4 +51,22 @@ export const removeFieldsFromObject = <
     delete updatedObj[field];
   }
   return updatedObj;
+};
+
+export const mergeZodSchema = <T extends Entity>(
+  entity: T
+): z.ZodObject<Record<Keys<T>, z.ZodString>, "strip"> => {
+  const entityFields: Keys<T>[] = Object.keys(
+    (Prisma as any)[`${entity}ScalarFieldEnum`]
+  ) as Keys<T>[];
+
+  const schema = entityFields.reduce((schema, field) => {
+    return schema.merge(
+      z.object({
+        [field]: z.string().optional(),
+      })
+    );
+  }, z.object({}));
+
+  return schema as z.ZodObject<Record<Keys<T>, z.ZodString>, "strip">;
 };

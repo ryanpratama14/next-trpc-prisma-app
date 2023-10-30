@@ -3,7 +3,7 @@
 import { trpc } from "@/app/_trpc/client";
 import React, { Fragment, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { createUrl } from "@/lib/utils";
+import { formatDate, createUrl } from "@/lib/utils";
 import { UserType } from "@/server/schema";
 
 export default function TodoClient() {
@@ -20,10 +20,11 @@ export default function TodoClient() {
   const search = searchParams.get("q") ?? "";
 
   const { data, isLoading } = trpc.user.list.useQuery({
+    limit: 1,
+    page: parseInt(page),
     params: {
-      limit: 1,
-      page: parseInt(page),
-      search: search,
+      name: search,
+      registeredAt: "2023-10-29",
     },
   });
 
@@ -33,10 +34,8 @@ export default function TodoClient() {
   const totalPages = data ? Math.ceil(data.totalData / data.limit) : 0;
 
   const { data: user, isLoading: isLoadingUser } = trpc.user.detail.useQuery({
-    id: 12,
+    id: 16,
   });
-
-  console.log(user, data);
 
   const { data: positions } = trpc.position.list.useQuery();
 
@@ -44,6 +43,7 @@ export default function TodoClient() {
     name: "",
     email: "",
     positionId: undefined,
+    registeredAt: "",
   });
 
   const [userId, setUserId] = useState<number>(0);
@@ -122,6 +122,8 @@ export default function TodoClient() {
                   <p>Name: {user?.name}</p>
                   <p>Position: {user?.position?.name}</p>
                   <p>Email: {user?.email}</p>
+                  <p>Date: {formatDate(user?.registeredAt)}</p>
+                  <p>id: {user?.id}</p>
                   <button onClick={() => deleteUser({ id: user.id })}>
                     Delete user
                   </button>
@@ -177,6 +179,7 @@ export default function TodoClient() {
                     body: {
                       name: userById.name,
                       email: userById.email,
+                      registeredAt: userById.registeredAt,
                     },
                   });
                 }}
@@ -196,6 +199,14 @@ export default function TodoClient() {
                   name="email"
                   value={userById.email}
                   type="email"
+                  className="text-black"
+                />
+                <input
+                  placeholder="Date"
+                  onChange={handleChange}
+                  name="registeredAt"
+                  value={formatDate(userById.registeredAt)}
+                  type="date"
                   className="text-black"
                 />
                 <select
@@ -231,6 +242,7 @@ export default function TodoClient() {
                         name: user.name,
                         email: user.email,
                         positionId: user.positionId,
+                        registeredAt: user.registeredAt,
                       });
                     }
                   }}
@@ -240,6 +252,10 @@ export default function TodoClient() {
                 <p>Name: {user?.name}</p>
                 <p>Position: {user?.position?.name}</p>
                 <p>Email: {user?.email}</p>
+                <p>
+                  Date: {user?.registeredAt && formatDate(user.registeredAt)}
+                </p>
+                <p>id: {user?.id}</p>
               </Fragment>
             )}
           </section>

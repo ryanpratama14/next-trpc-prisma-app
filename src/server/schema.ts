@@ -1,22 +1,32 @@
 import { z } from "zod";
 
 export class schema {
+  static pagination = {
+    page: z.number().min(1),
+    limit: z.number().min(1).optional(),
+  };
+
   static user = class {
-    static list = z
-      .object({
-        params: z.object({
-          page: z.number().min(1),
-          limit: z.number().min(1),
-          positionId: z.number().optional(),
-          search: z.string().optional(),
-        }),
-      })
-      .optional();
+    static list = z.object({
+      ...schema.pagination,
+      params: z
+        .object({
+          id: z.number().int().optional(),
+          email: z.string().optional(),
+          name: z.string().optional(),
+          followers: z.number().int().optional(),
+          isActive: z.boolean().optional(),
+          registeredAt: z.string().optional(),
+          positionName: z.string().optional(),
+        })
+        .optional(),
+    });
 
     static create = z.object({
       name: z.string().min(4),
       email: z.string().email(),
       positionId: z.number().nullish(),
+      registeredAt: z.string(),
     });
 
     static detail = z.object({
