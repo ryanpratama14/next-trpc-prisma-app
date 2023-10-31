@@ -24,7 +24,6 @@ export default function TodoClient() {
     page: parseInt(page),
     params: {
       name: search,
-      registeredAt: "2023-10-29",
     },
   });
 

@@ -4,6 +4,26 @@ import { db } from "#/prisma/client";
 import { schema } from "@/server/schema";
 import { generateEndDate, generateStartDate } from "@/lib/utils";
 
+const getUserById = async (id: number) => {
+  const data = await db.user.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      position: true,
+    },
+  });
+
+  if (!data) {
+    throw new TRPCError({
+      code: "NOT_FOUND",
+      message: "Data not found",
+    });
+  }
+
+  return data;
+};
+
 export const userRouter = router({
   create: publicProcedure
     .input(schema.user.create)
@@ -96,41 +116,14 @@ export const userRouter = router({
   }),
 
   detail: publicProcedure.input(schema.user.detail).query(async ({ input }) => {
-    const data = await db.user.findUnique({
-      where: {
-        id: input.id,
-      },
-      include: {
-        position: true,
-      },
-    });
-
-    if (!data) {
-      throw new TRPCError({
-        code: "NOT_FOUND",
-        message: "User not found",
-      });
-    }
-
-    return data;
+    return getUserById(input.id);
   }),
 
   update: publicProcedure
     .input(schema.user.update)
     .mutation(async ({ input }) => {
       const { id, body } = input;
-      const data = await db.user.findUnique({
-        where: {
-          id: id,
-        },
-      });
-
-      if (!data) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "User not found",
-        });
-      }
+      const data = await getUserById(id);
 
       const updatedData = await db.user.update({
         where: {
@@ -153,22 +146,11 @@ export const userRouter = router({
   delete: publicProcedure
     .input(schema.user.detail)
     .mutation(async ({ input }) => {
-      const user = await db.user.findUnique({
-        where: {
-          id: input.id,
-        },
-      });
-
-      if (!user) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "User not found",
-        });
-      }
-
+      const { id } = input;
+      await getUserById(id);
       await db.user.delete({
         where: {
-          id: input.id,
+          id,
         },
       });
 
