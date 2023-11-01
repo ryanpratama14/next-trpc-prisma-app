@@ -118,7 +118,7 @@ export default function TodoClient() {
                   <p>Name: {user?.name}</p>
                   <p>Position: {user?.position?.name}</p>
                   <p>Email: {user?.email}</p>
-                  <p>Date: {formatDate(user?.registeredAt)}</p>
+                  <p>Date: {formatDate(user?.updatedAt)}</p>
                   <p>id: {user?.id}</p>
                   <button onClick={() => deleteUser({ id: user.id })}>
                     Delete user
@@ -244,9 +244,7 @@ export default function TodoClient() {
                 <p>Name: {user?.name}</p>
                 <p>Position: {user?.position?.name}</p>
                 <p>Email: {user?.email}</p>
-                <p>
-                  Date: {user?.registeredAt && formatDate(user.registeredAt)}
-                </p>
+                <p>Date: {user?.updatedAt && formatDate(user.updatedAt)}</p>
                 <p>id: {user?.id}</p>
               </Fragment>
             )}

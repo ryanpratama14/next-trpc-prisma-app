@@ -12,7 +12,7 @@ import type { Prisma } from '@prisma/client';
 
 export const TransactionIsolationLevelSchema = z.enum(['ReadUncommitted','ReadCommitted','RepeatableRead','Serializable']);
 
-export const UserScalarFieldEnumSchema = z.enum(['id','email','name','followers','isActive','registeredAt','positionId']);
+export const UserScalarFieldEnumSchema = z.enum(['id','email','name','followers','isActive','registeredAt','updatedAt','positionId']);
 
 export const PositionScalarFieldEnumSchema = z.enum(['id','name','registeredAt']);
 
@@ -36,6 +36,7 @@ export const UserSchema = z.object({
   followers: z.number().int(),
   isActive: z.boolean(),
   registeredAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
   positionId: z.number().int().nullable(),
 })
 
@@ -89,6 +90,7 @@ export const UserSelectSchema: z.ZodType<Prisma.UserSelect> = z.object({
   followers: z.boolean().optional(),
   isActive: z.boolean().optional(),
   registeredAt: z.boolean().optional(),
+  updatedAt: z.boolean().optional(),
   positionId: z.boolean().optional(),
   position: z.union([z.boolean(),z.lazy(() => PositionArgsSchema)]).optional(),
 }).strict()
@@ -147,6 +149,7 @@ export const UserWhereInputSchema: z.ZodType<Prisma.UserWhereInput> = z.object({
   followers: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   isActive: z.union([ z.lazy(() => BoolFilterSchema),z.boolean() ]).optional(),
   registeredAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   positionId: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
   position: z.union([ z.lazy(() => PositionNullableRelationFilterSchema),z.lazy(() => PositionWhereInputSchema) ]).optional().nullable(),
 }).strict();
@@ -158,6 +161,7 @@ export const UserOrderByWithRelationInputSchema: z.ZodType<Prisma.UserOrderByWit
   followers: z.lazy(() => SortOrderSchema).optional(),
   isActive: z.lazy(() => SortOrderSchema).optional(),
   registeredAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional(),
   positionId: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   position: z.lazy(() => PositionOrderByWithRelationInputSchema).optional()
 }).strict();
@@ -184,6 +188,7 @@ export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> 
   followers: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
   isActive: z.union([ z.lazy(() => BoolFilterSchema),z.boolean() ]).optional(),
   registeredAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   positionId: z.union([ z.lazy(() => IntNullableFilterSchema),z.number().int() ]).optional().nullable(),
   position: z.union([ z.lazy(() => PositionNullableRelationFilterSchema),z.lazy(() => PositionWhereInputSchema) ]).optional().nullable(),
 }).strict());
@@ -195,6 +200,7 @@ export const UserOrderByWithAggregationInputSchema: z.ZodType<Prisma.UserOrderBy
   followers: z.lazy(() => SortOrderSchema).optional(),
   isActive: z.lazy(() => SortOrderSchema).optional(),
   registeredAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional(),
   positionId: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   _count: z.lazy(() => UserCountOrderByAggregateInputSchema).optional(),
   _avg: z.lazy(() => UserAvgOrderByAggregateInputSchema).optional(),
@@ -213,6 +219,7 @@ export const UserScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.UserScal
   followers: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
   isActive: z.union([ z.lazy(() => BoolWithAggregatesFilterSchema),z.boolean() ]).optional(),
   registeredAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
+  updatedAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
   positionId: z.union([ z.lazy(() => IntNullableWithAggregatesFilterSchema),z.number() ]).optional().nullable(),
 }).strict();
 
@@ -342,6 +349,7 @@ export const UserCreateInputSchema: z.ZodType<Prisma.UserCreateInput> = z.object
   followers: z.number().int().optional(),
   isActive: z.boolean().optional(),
   registeredAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
   position: z.lazy(() => PositionCreateNestedOneWithoutUserInputSchema).optional()
 }).strict();
 
@@ -352,6 +360,7 @@ export const UserUncheckedCreateInputSchema: z.ZodType<Prisma.UserUncheckedCreat
   followers: z.number().int().optional(),
   isActive: z.boolean().optional(),
   registeredAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
   positionId: z.number().int().optional().nullable()
 }).strict();
 
@@ -361,6 +370,7 @@ export const UserUpdateInputSchema: z.ZodType<Prisma.UserUpdateInput> = z.object
   followers: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   isActive: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   registeredAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   position: z.lazy(() => PositionUpdateOneWithoutUserNestedInputSchema).optional()
 }).strict();
 
@@ -371,6 +381,7 @@ export const UserUncheckedUpdateInputSchema: z.ZodType<Prisma.UserUncheckedUpdat
   followers: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   isActive: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   registeredAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   positionId: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
@@ -381,6 +392,7 @@ export const UserCreateManyInputSchema: z.ZodType<Prisma.UserCreateManyInput> = 
   followers: z.number().int().optional(),
   isActive: z.boolean().optional(),
   registeredAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
   positionId: z.number().int().optional().nullable()
 }).strict();
 
@@ -390,6 +402,7 @@ export const UserUpdateManyMutationInputSchema: z.ZodType<Prisma.UserUpdateManyM
   followers: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   isActive: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   registeredAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const UserUncheckedUpdateManyInputSchema: z.ZodType<Prisma.UserUncheckedUpdateManyInput> = z.object({
@@ -399,6 +412,7 @@ export const UserUncheckedUpdateManyInputSchema: z.ZodType<Prisma.UserUncheckedU
   followers: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   isActive: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   registeredAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   positionId: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
@@ -560,6 +574,7 @@ export const UserCountOrderByAggregateInputSchema: z.ZodType<Prisma.UserCountOrd
   followers: z.lazy(() => SortOrderSchema).optional(),
   isActive: z.lazy(() => SortOrderSchema).optional(),
   registeredAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional(),
   positionId: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
@@ -576,6 +591,7 @@ export const UserMaxOrderByAggregateInputSchema: z.ZodType<Prisma.UserMaxOrderBy
   followers: z.lazy(() => SortOrderSchema).optional(),
   isActive: z.lazy(() => SortOrderSchema).optional(),
   registeredAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional(),
   positionId: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
@@ -586,6 +602,7 @@ export const UserMinOrderByAggregateInputSchema: z.ZodType<Prisma.UserMinOrderBy
   followers: z.lazy(() => SortOrderSchema).optional(),
   isActive: z.lazy(() => SortOrderSchema).optional(),
   registeredAt: z.lazy(() => SortOrderSchema).optional(),
+  updatedAt: z.lazy(() => SortOrderSchema).optional(),
   positionId: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
@@ -1058,7 +1075,8 @@ export const UserCreateWithoutPositionInputSchema: z.ZodType<Prisma.UserCreateWi
   name: z.string(),
   followers: z.number().int().optional(),
   isActive: z.boolean().optional(),
-  registeredAt: z.coerce.date().optional()
+  registeredAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional()
 }).strict();
 
 export const UserUncheckedCreateWithoutPositionInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutPositionInput> = z.object({
@@ -1067,7 +1085,8 @@ export const UserUncheckedCreateWithoutPositionInputSchema: z.ZodType<Prisma.Use
   name: z.string(),
   followers: z.number().int().optional(),
   isActive: z.boolean().optional(),
-  registeredAt: z.coerce.date().optional()
+  registeredAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional()
 }).strict();
 
 export const UserCreateOrConnectWithoutPositionInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutPositionInput> = z.object({
@@ -1106,6 +1125,7 @@ export const UserScalarWhereInputSchema: z.ZodType<Prisma.UserScalarWhereInput> 
   followers: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   isActive: z.union([ z.lazy(() => BoolFilterSchema),z.boolean() ]).optional(),
   registeredAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   positionId: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
 }).strict();
 
@@ -1115,7 +1135,8 @@ export const UserCreateManyPositionInputSchema: z.ZodType<Prisma.UserCreateManyP
   name: z.string(),
   followers: z.number().int().optional(),
   isActive: z.boolean().optional(),
-  registeredAt: z.coerce.date().optional()
+  registeredAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional()
 }).strict();
 
 export const UserUpdateWithoutPositionInputSchema: z.ZodType<Prisma.UserUpdateWithoutPositionInput> = z.object({
@@ -1124,6 +1145,7 @@ export const UserUpdateWithoutPositionInputSchema: z.ZodType<Prisma.UserUpdateWi
   followers: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   isActive: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   registeredAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const UserUncheckedUpdateWithoutPositionInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutPositionInput> = z.object({
@@ -1133,6 +1155,7 @@ export const UserUncheckedUpdateWithoutPositionInputSchema: z.ZodType<Prisma.Use
   followers: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   isActive: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   registeredAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const UserUncheckedUpdateManyWithoutPositionInputSchema: z.ZodType<Prisma.UserUncheckedUpdateManyWithoutPositionInput> = z.object({
@@ -1142,6 +1165,7 @@ export const UserUncheckedUpdateManyWithoutPositionInputSchema: z.ZodType<Prisma
   followers: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   isActive: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   registeredAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 /////////////////////////////////////////

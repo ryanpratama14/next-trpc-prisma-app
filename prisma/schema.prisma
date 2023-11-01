@@ -18,6 +18,7 @@ model User {
   followers    Int       @default(0)
   isActive     Boolean   @default(true)
   registeredAt DateTime  @default(now())
+  updatedAt    DateTime  @default(now())
   position     Position? @relation(fields: [positionId], references: [id])
   positionId   Int?
 }

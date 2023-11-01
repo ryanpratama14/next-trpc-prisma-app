@@ -2,7 +2,11 @@ import { TRPCError } from "@trpc/server";
 import { publicProcedure, router } from "@/server/trpc";
 import { db } from "#/prisma/client";
 import { schema } from "@/server/schema";
-import { generateEndDate, generateStartDate } from "@/lib/utils";
+import {
+  generateEndDate,
+  generateNewDate,
+  generateStartDate,
+} from "@/lib/utils";
 import { MESSAGES_LIST } from "@/server/helper";
 import { RouterInput, RouterOutput } from "..";
 
@@ -95,6 +99,9 @@ export const userRouter = router({
     };
 
     const data = await db.user.findMany({
+      orderBy: {
+        updatedAt: "desc",
+      },
       ...pagination,
       ...optionalQueries,
     });
@@ -124,20 +131,16 @@ export const userRouter = router({
     .input(schema.user.update)
     .mutation(async ({ input }) => {
       const { id, body } = input;
-      const data = await getUserById(id);
-
+      await getUserById(id);
       const updatedData = await db.user.update({
         where: {
-          id: id,
+          id,
         },
         data: {
           name: body.name,
           email: body.email,
           positionId: body.positionId,
-          // registeredAt:
-          //   body.registeredAt !== data.registeredAt.toString()
-          //     ? new Date(body.registeredAt)
-          //     : data.registeredAt,
+          updatedAt: generateNewDate(),
         },
       });
 
