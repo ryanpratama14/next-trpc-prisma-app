@@ -40,7 +40,6 @@ export default function TodoClient() {
     name: "",
     email: "",
     positionId: undefined,
-    registeredAt: "",
   });
 
   const [userId, setUserId] = useState<number>(0);
@@ -181,7 +180,6 @@ export default function TodoClient() {
                     body: {
                       name: userById.name,
                       email: userById.email,
-                      registeredAt: userById.registeredAt,
                     },
                   });
                 }}
@@ -203,14 +201,7 @@ export default function TodoClient() {
                   type="email"
                   className="text-black"
                 />
-                <input
-                  placeholder="Date"
-                  onChange={handleChange}
-                  name="registeredAt"
-                  value={formatDate(userById.registeredAt)}
-                  type="date"
-                  className="text-black"
-                />
+
                 <select
                   onChange={handleChange}
                   name="positionId"
@@ -244,7 +235,6 @@ export default function TodoClient() {
                         name: user.name,
                         email: user.email,
                         positionId: user.positionId,
-                        registeredAt: user.registeredAt,
                       });
                     }
                   }}

@@ -134,10 +134,10 @@ export const userRouter = router({
           name: body.name,
           email: body.email,
           positionId: body.positionId,
-          registeredAt:
-            body.registeredAt !== data.registeredAt.toString()
-              ? new Date(body.registeredAt)
-              : data.registeredAt,
+          // registeredAt:
+          //   body.registeredAt !== data.registeredAt.toString()
+          //     ? new Date(body.registeredAt)
+          //     : data.registeredAt,
         },
       });
 
