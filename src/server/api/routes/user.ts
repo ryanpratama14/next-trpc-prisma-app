@@ -4,6 +4,7 @@ import { db } from "#/prisma/client";
 import { schema } from "@/server/schema";
 import { generateEndDate, generateStartDate } from "@/lib/utils";
 import { MESSAGES_LIST } from "@/server/helper";
+import { RouterInput, RouterOutput } from "..";
 
 const getUserById = async (id: number) => {
   const data = await db.user.findUnique({
@@ -160,3 +161,5 @@ export const userRouter = router({
 });
 
 export type UserRouter = typeof userRouter;
+export type UserList = RouterOutput["user"]["list"];
+export type UserListInput = RouterInput["user"]["list"];

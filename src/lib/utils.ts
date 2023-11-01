@@ -1,6 +1,6 @@
 import { ReadonlyURLSearchParams } from "next/navigation";
 
-export const LoadToTop = () => {
+export const loadToTop = () => {
   window.scrollTo({
     top: 0,
     behavior: "smooth",
