@@ -74,7 +74,6 @@ export const userRouter = router({
           gte:
             input.params?.registeredAt &&
             generateStartDate(input.params.registeredAt),
-
           lte:
             input?.params?.registeredAt &&
             generateEndDate(input.params.registeredAt),
@@ -104,14 +103,14 @@ export const userRouter = router({
       })
     ).length;
 
-    const totalPage = Math.ceil(totalData / limit) || 1;
+    const totalPages = Math.ceil(totalData / limit) || 1;
 
     return {
       data,
       limit,
       page,
       totalData,
-      totalPage,
+      totalPages,
     };
   }),
 

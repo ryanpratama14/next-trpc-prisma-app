@@ -30,8 +30,6 @@ export default function TodoClient() {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [error, setError] = useState<string[] | undefined>([]);
 
-  const totalPages = data ? Math.ceil(data.totalData / data.limit) : 0;
-
   const { data: user, isLoading: isLoadingUser } = trpc.user.detail.useQuery({
     id: 16,
   });
@@ -129,38 +127,43 @@ export default function TodoClient() {
                 </section>
               );
             })}
-            <section className="flex gap-2">
-              <button
-                onClick={() => {
-                  const prevPage = (Number(page) - 1).toString();
+            {data ? (
+              <Fragment>
+                <section className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      const prevPage = (Number(page) - 1).toString();
 
-                  if (Number(prevPage) === 1) {
-                    newParams.delete("page");
-                  } else newParams.set("page", prevPage);
+                      if (Number(prevPage) === 1) {
+                        newParams.delete("page");
+                      } else newParams.set("page", prevPage);
 
-                  router.push(createUrl("/", newParams));
-                }}
-                disabled={Number(page) === 1 || data?.totalData === 0}
-                type="button"
-              >
-                Prev Page
-              </button>
-              <button
-                onClick={() => {
-                  const nextPage = (Number(page) + 1).toString();
-                  newParams.set("page", nextPage);
-                  router.push(createUrl("/", newParams));
-                }}
-                disabled={Number(page) >= totalPages || data?.totalData === 0}
-                type="button"
-              >
-                Next Page
-              </button>
-            </section>
-
-            <p>
-              Page {page} / {data?.totalPage}
-            </p>
+                      router.push(createUrl("/", newParams));
+                    }}
+                    disabled={Number(page) === 1 || data.totalData === 0}
+                    type="button"
+                  >
+                    Prev Page
+                  </button>
+                  <button
+                    onClick={() => {
+                      const nextPage = (Number(page) + 1).toString();
+                      newParams.set("page", nextPage);
+                      router.push(createUrl("/", newParams));
+                    }}
+                    disabled={
+                      Number(page) >= data.totalPages || data.totalData === 0
+                    }
+                    type="button"
+                  >
+                    Next Page
+                  </button>
+                </section>
+                <p>
+                  Page {page} / {data.totalPages}
+                </p>
+              </Fragment>
+            ) : null}
           </section>
         )}
 

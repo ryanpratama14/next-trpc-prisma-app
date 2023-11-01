@@ -86,3 +86,5 @@ export const positionRouter = router({
       };
     }),
 });
+
+export type PositionRouter = typeof positionRouter;

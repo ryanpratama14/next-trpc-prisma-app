@@ -1,6 +1,6 @@
 import { router } from "@/server/trpc";
-import { userRouter } from "@/server/routes/user";
-import { positionRouter } from "@/server/routes/position";
+import { userRouter } from "@/server/api/routes/user";
+import { positionRouter } from "@/server/api/routes/position";
 
 export const appRouter = router({
   user: userRouter,
