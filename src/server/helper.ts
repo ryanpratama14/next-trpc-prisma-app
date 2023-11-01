@@ -1,6 +1,13 @@
 import { Prisma } from "@prisma/client";
 import { z } from "zod";
 
+export const MESSAGES_LIST = {
+  NOT_FOUND: "Data not found",
+  ALREADY_EXISTS: "Data already exists",
+  DELETED: "Data has been deleted",
+  UNAUTHORIZED: "You are not authorized to access",
+};
+
 type A<T extends string> = T extends `${infer U}ScalarFieldEnum` ? U : never;
 type Entity = A<keyof typeof Prisma>;
 type Keys<T extends Entity> = Extract<

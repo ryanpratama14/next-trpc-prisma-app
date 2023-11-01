@@ -3,6 +3,7 @@ import { publicProcedure, router } from "@/server/trpc";
 import { db } from "#/prisma/client";
 import { schema } from "@/server/schema";
 import { generateEndDate, generateStartDate } from "@/lib/utils";
+import { MESSAGES_LIST } from "@/server/helper";
 
 const getUserById = async (id: number) => {
   const data = await db.user.findUnique({
@@ -17,7 +18,7 @@ const getUserById = async (id: number) => {
   if (!data) {
     throw new TRPCError({
       code: "NOT_FOUND",
-      message: "Data not found",
+      message: MESSAGES_LIST["NOT_FOUND"],
     });
   }
 
@@ -37,7 +38,7 @@ export const userRouter = router({
       if (isExist) {
         throw new TRPCError({
           code: "BAD_REQUEST",
-          message: "User already exists",
+          message: MESSAGES_LIST["ALREADY_EXISTS"],
         });
       }
 
@@ -145,16 +146,15 @@ export const userRouter = router({
   delete: publicProcedure
     .input(schema.user.detail)
     .mutation(async ({ input }) => {
-      const { id } = input;
-      await getUserById(id);
+      await getUserById(input.id);
       await db.user.delete({
         where: {
-          id,
+          id: input.id,
         },
       });
 
       return {
-        message: `User has been deleted`,
+        message: MESSAGES_LIST["DELETED"],
       };
     }),
 });
