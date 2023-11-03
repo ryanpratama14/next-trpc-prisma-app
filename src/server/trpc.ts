@@ -1,5 +1,6 @@
-import { initTRPC } from "@trpc/server";
+import { TRPCError, initTRPC } from "@trpc/server";
 import { ZodError } from "zod";
+import { MESSAGES_LIST } from "./helper";
 
 export const t = initTRPC.context().create({
   errorFormatter(opts) {
@@ -17,5 +18,28 @@ export const t = initTRPC.context().create({
   },
 });
 
+export const middleware = t.middleware;
+
+const isAuth = middleware(async (opts) => {
+  const user = {
+    username: "Ryan",
+    email: "ryanpratama.dev@gmail.com",
+  };
+
+  if (!user) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: MESSAGES_LIST["UNAUTHORIZED"],
+    });
+  }
+
+  return opts.next({
+    ctx: {
+      user,
+    },
+  });
+});
+
 export const router = t.router;
 export const publicProcedure = t.procedure;
+export const privateProcedure = t.procedure.use(isAuth);

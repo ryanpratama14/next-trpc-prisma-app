@@ -1,5 +1,5 @@
 import { TRPCError } from "@trpc/server";
-import { publicProcedure, router } from "@/server/trpc";
+import { privateProcedure, publicProcedure, router } from "@/server/trpc";
 import { db } from "#/prisma/client";
 import { schema } from "@/server/schema";
 import {
@@ -122,6 +122,12 @@ export const userRouter = router({
       totalPages,
     };
   }),
+
+  detailPrivate: privateProcedure
+    .input(schema.user.detail)
+    .query(async (opts) => {
+      return getUserById(opts.input.id);
+    }),
 
   detail: publicProcedure.input(schema.user.detail).query(async ({ input }) => {
     return getUserById(input.id);
