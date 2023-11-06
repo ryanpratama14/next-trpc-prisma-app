@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { formatDate, createUrl } from "@/lib/utils";
 import { UserType } from "@/server/schema";
 
-export default function TodoClient() {
+export default function UserClient() {
   const router = useRouter();
   // const utils = trpc.useUtils();
   const searchParams = useSearchParams();
