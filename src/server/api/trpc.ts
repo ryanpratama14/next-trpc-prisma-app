@@ -1,6 +1,6 @@
 import { TRPCError, initTRPC } from "@trpc/server";
+import { MESSAGES_LIST } from "@/server/helper";
 import { ZodError } from "zod";
-import { MESSAGES_LIST } from "./helper";
 
 export const t = initTRPC.context().create({
   errorFormatter(opts) {

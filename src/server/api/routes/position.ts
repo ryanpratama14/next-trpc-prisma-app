@@ -1,7 +1,7 @@
 import { db } from "#/prisma/client";
 import { MESSAGES_LIST } from "@/server/helper";
 import { schema } from "@/server/schema";
-import { publicProcedure, router } from "@/server/trpc";
+import { publicProcedure, router } from "@/server/api/trpc";
 import { TRPCError } from "@trpc/server";
 
 const getPositionById = async (id: number) => {

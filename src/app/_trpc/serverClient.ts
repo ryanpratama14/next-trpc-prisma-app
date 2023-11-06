@@ -1,12 +1,11 @@
 import { httpBatchLink } from "@trpc/client";
-
 import { appRouter } from "@/server/api";
-import { getBaseUrl } from "@/lib/utils";
+import { getUrl } from "@/server/shared";
 
-export const serverClient = appRouter.createCaller({
+export const trpcServer = appRouter.createCaller({
   links: [
     httpBatchLink({
-      url: `${getBaseUrl()}/api/trpc`,
+      url: getUrl(),
     }),
   ],
 });

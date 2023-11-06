@@ -1,5 +1,5 @@
 import { TRPCError } from "@trpc/server";
-import { privateProcedure, publicProcedure, router } from "@/server/trpc";
+import { privateProcedure, publicProcedure, router } from "@/server/api/trpc";
 import { db } from "#/prisma/client";
 import { schema } from "@/server/schema";
 import {
@@ -8,7 +8,7 @@ import {
   generateStartDate,
 } from "@/lib/utils";
 import { MESSAGES_LIST } from "@/server/helper";
-import { RouterInput, RouterOutput } from "..";
+import { RouterInputs, RouterOutputs } from "@/server/shared";
 
 const getUserById = async (id: number) => {
   const data = await db.user.findUnique({
@@ -170,5 +170,5 @@ export const userRouter = router({
 });
 
 export type UserRouter = typeof userRouter;
-export type UserList = RouterOutput["user"]["list"];
-export type UserListInput = RouterInput["user"]["list"];
+export type UserList = RouterOutputs["user"]["list"];
+export type UserListInput = RouterInputs["user"]["list"];
