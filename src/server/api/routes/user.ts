@@ -146,7 +146,7 @@ export const userRouter = router({
           name: body.name,
           email: body.email,
           positionId: body.positionId,
-          registeredAt: new Date(body.registeredAt),
+          registeredAt: generateNewDate(body.registeredAt),
           updatedAt: generateNewDate(),
         },
       });

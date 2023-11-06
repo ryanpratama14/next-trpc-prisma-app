@@ -38,6 +38,7 @@ export const formatDate = (dateString: Date): string => {
   return `${year}-${month}-${day}`;
 };
 
-export const generateNewDate = (): string => {
-  return new Date().toISOString();
+export const generateNewDate = (dateString?: string): Date => {
+  if (dateString) return new Date(dateString);
+  return new Date();
 };
