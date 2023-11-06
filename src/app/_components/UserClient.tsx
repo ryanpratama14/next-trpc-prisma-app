@@ -1,7 +1,7 @@
 "use client";
 
 import { trpc } from "@/app/_trpc/client";
-import React, { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formatDate, createUrl } from "@/lib/utils";
 import { UserType } from "@/server/schema";
@@ -40,6 +40,7 @@ export default function TodoClient() {
     name: "",
     email: "",
     positionId: undefined,
+    registeredAt: formatDate(new Date()),
   });
 
   const [userId, setUserId] = useState<number>(0);
@@ -180,6 +181,7 @@ export default function TodoClient() {
                     body: {
                       name: userById.name,
                       email: userById.email,
+                      registeredAt: userById.registeredAt,
                     },
                   });
                 }}
@@ -199,6 +201,13 @@ export default function TodoClient() {
                   name="email"
                   value={userById.email}
                   type="email"
+                  className="text-black"
+                />
+                <input
+                  onChange={handleChange}
+                  name="registeredAt"
+                  value={userById.registeredAt}
+                  type="date"
                   className="text-black"
                 />
 
@@ -235,6 +244,7 @@ export default function TodoClient() {
                         name: user.name,
                         email: user.email,
                         positionId: user.positionId,
+                        registeredAt: formatDate(user.registeredAt),
                       });
                     }
                   }}
@@ -244,7 +254,9 @@ export default function TodoClient() {
                 <p>Name: {user?.name}</p>
                 <p>Position: {user?.position?.name}</p>
                 <p>Email: {user?.email}</p>
-                <p>Date: {user?.updatedAt && formatDate(user.updatedAt)}</p>
+                <p>
+                  Date: {user?.registeredAt && formatDate(user.registeredAt)}
+                </p>
                 <p>id: {user?.id}</p>
               </Fragment>
             )}

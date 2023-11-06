@@ -26,6 +26,7 @@ export class schema {
       name: z.string().min(4),
       email: z.string().email(),
       positionId: z.number().nullish(),
+      registeredAt: z.string(),
     });
 
     static detail = z.object({

@@ -146,6 +146,7 @@ export const userRouter = router({
           name: body.name,
           email: body.email,
           positionId: body.positionId,
+          registeredAt: new Date(body.registeredAt),
           updatedAt: generateNewDate(),
         },
       });
@@ -170,5 +171,5 @@ export const userRouter = router({
 });
 
 export type UserRouter = typeof userRouter;
-export type UserList = RouterOutputs["user"]["list"];
+export type UserList = RouterOutputs["user"]["list"]["data"];
 export type UserListInput = RouterInputs["user"]["list"];

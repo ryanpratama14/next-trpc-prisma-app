@@ -3,18 +3,19 @@
 import { useState } from "react";
 import { trpc } from "@/app/_trpc/client";
 import { UserType } from "@/server/schema";
+import { formatDate } from "@/lib/utils";
 
 const initialData: UserType = {
   name: "",
   email: "",
   positionId: undefined,
+  registeredAt: formatDate(new Date()),
 };
 
 export default function AddUser() {
   const [data, setData] = useState(initialData);
   const { data: positions } = trpc.position.list.useQuery();
   const { data: user } = trpc.user.detailPrivate.useQuery({ id: 12 });
-  console.log(user);
 
   const { mutate } = trpc.user.create.useMutation({
     onSuccess: () => {

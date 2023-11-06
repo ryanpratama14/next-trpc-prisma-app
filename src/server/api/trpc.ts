@@ -1,8 +1,10 @@
 import { TRPCError, initTRPC } from "@trpc/server";
 import { MESSAGES_LIST } from "@/server/helper";
 import { ZodError } from "zod";
+import SuperJSON from "superjson";
 
 export const t = initTRPC.context().create({
+  transformer: SuperJSON,
   errorFormatter(opts) {
     const { shape, error } = opts;
     return {
