@@ -95,7 +95,7 @@ export const userRouter = router({
       },
     };
 
-    const [data, totalData] = await Promise.all([
+    const [data, totalData] = await db.$transaction([
       db.user.findMany({
         orderBy: {
           updatedAt: "desc",
