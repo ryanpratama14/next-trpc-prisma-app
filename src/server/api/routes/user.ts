@@ -7,7 +7,7 @@ import {
   generateNewDate,
   generateStartDate,
 } from "@/lib/utils";
-import { MESSAGES_LIST } from "@/server/helper";
+import { MESSAGES_LIST, prismaExclude } from "@/server/helper";
 import { RouterInputs, RouterOutputs } from "@/server/shared";
 
 const getUserById = async (id: number) => {
@@ -68,9 +68,6 @@ export const userRouter = router({
     };
 
     const optionalQueries = {
-      include: {
-        position: true,
-      },
       where: {
         name: {
           contains: input?.params?.name,
@@ -98,19 +95,22 @@ export const userRouter = router({
       },
     };
 
-    const data = await db.user.findMany({
-      orderBy: {
-        updatedAt: "desc",
-      },
-      ...pagination,
-      ...optionalQueries,
-    });
-
-    const totalData = (
-      await db.user.findMany({
+    const [data, totalData] = await Promise.all([
+      db.user.findMany({
+        orderBy: {
+          updatedAt: "desc",
+        },
+        select: {
+          ...prismaExclude("User", ["positionId", "registeredAt"]),
+          position: {
+            select: prismaExclude("Position", ["registeredAt", "id"]),
+          },
+        },
+        ...pagination,
         ...optionalQueries,
-      })
-    ).length;
+      }),
+      db.user.count(optionalQueries),
+    ]);
 
     const totalPages = Math.ceil(totalData / limit) || 1;
 
