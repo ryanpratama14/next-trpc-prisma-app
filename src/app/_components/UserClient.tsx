@@ -19,7 +19,7 @@ export default function UserClient() {
 
   const search = searchParams.get("q") ?? "";
 
-  const { data, isLoading } = trpc.user.list.useQuery({
+  const { data, isPending } = trpc.user.list.useQuery({
     limit: 1,
     page: parseInt(page),
     params: {
@@ -30,7 +30,7 @@ export default function UserClient() {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [error, setError] = useState<string[] | undefined>([]);
 
-  const { data: user, isLoading: isLoadingUser } = trpc.user.detail.useQuery({
+  const { data: user, isPending: isPendingUser } = trpc.user.detail.useQuery({
     id: 16,
   });
 
@@ -106,7 +106,7 @@ export default function UserClient() {
 
       <section className="flex flex-col gap-4">
         <h1>Users</h1>
-        {isLoading ? (
+        {isPending ? (
           <p>Loading...</p>
         ) : (
           <section className="flex flex-col gap-2">
@@ -168,7 +168,7 @@ export default function UserClient() {
         )}
 
         <h1>User ById</h1>
-        {isLoadingUser ? (
+        {isPendingUser ? (
           <p>Loading user...</p>
         ) : (
           <section className="text-white bg-red-600 p-6 rounded-md flex flex-col gap-1">
