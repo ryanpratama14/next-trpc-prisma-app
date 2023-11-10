@@ -148,7 +148,7 @@ export const getEnum = <K extends string>(obj: Record<K, unknown>): [K, ...K[]] 
   return [firstKey!, ...otherKeys];
 };
 
-export const getEnumListed = <K extends string>(obj: Record<K, unknown>): K => {
+export const getEnumKeys = <K extends string>(obj: Record<K, unknown>): K => {
   const keys = Object.keys(obj) as K[];
   return keys[0];
 };

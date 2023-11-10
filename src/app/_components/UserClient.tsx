@@ -5,7 +5,7 @@ import { Fragment, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formatDate, createUrl } from "@/lib/utils";
 import { UserType } from "@/server/schema";
-import { getEnum, getEnumListed } from "@/server/helper";
+import { getEnumKeys } from "@/server/helper";
 import { UserModel } from "#/prisma/zod";
 
 export default function UserClient() {
@@ -47,7 +47,7 @@ export default function UserClient() {
 
   const [userId, setUserId] = useState<number>(0);
 
-  const { mutate } = trpc.user.update.useMutation({
+  const { mutate: updateUser } = trpc.user.update.useMutation({
     onSuccess: (res) => {
       alert(JSON.stringify(res));
       setIsEdit(false);
@@ -64,9 +64,8 @@ export default function UserClient() {
     },
   });
 
-  const type = getEnumListed(UserModel.shape);
-
-  const handleChange = (name: typeof type) => (e: React.ChangeEvent<HTMLInputElement>) => {
+  const userKeys = getEnumKeys(UserModel.shape);
+  const handleChange = (name: typeof userKeys) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserById({ ...userById, [name]: e.target.value });
   };
 
@@ -172,7 +171,7 @@ export default function UserClient() {
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
-                  mutate(
+                  updateUser(
                     {
                       id: userId,
                       body: userById,
