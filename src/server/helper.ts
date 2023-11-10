@@ -69,26 +69,36 @@ export const mergeZodSchema = <T extends Entity>(
   return schema as z.ZodObject<Record<Keys<T>, z.ZodString>, "strip">;
 };
 
-export const generateKeysFromZod = <T extends z.ZodTypeAny, K extends keyof T["_type"]>(
-  schema: T,
-): Array<K & string> => {
-  if (schema === null || schema === undefined) return [];
-  if (schema instanceof z.ZodNullable || schema instanceof z.ZodOptional)
-    return generateKeysFromZod(schema.unwrap());
-  if (schema instanceof z.ZodArray) return generateKeysFromZod(schema.element);
+export const getZodKeys = (schema: z.ZodType): string[] => {
+  if (schema instanceof z.ZodNullable || schema instanceof z.ZodOptional) {
+    return getZodKeys(schema.unwrap());
+  }
+  if (schema instanceof z.ZodArray) {
+    return getZodKeys(schema.element);
+  }
   if (schema instanceof z.ZodObject) {
-    const entries = Object.entries(schema.shape);
+    const entries = Object.entries<z.ZodType>(schema.shape);
     return entries.flatMap(([key, value]) => {
-      if (value instanceof z.ZodEnum) {
-        // Handle ZodEnum separately
-        return value.Enum as Array<K & string>;
-      }
-      const nested =
-        value instanceof z.ZodType
-          ? generateKeysFromZod(value).map(() => `${key}` as K & string)
-          : [];
-      return nested.length ? nested : [key as K & string];
+      const nested = getZodKeys(value).map((subKey) => `${key}.${subKey}`);
+      return nested.length ? nested : key;
     });
   }
   return [];
+};
+
+export const getZodEnum = <K extends string>(
+  obj: Record<K, unknown>,
+): z.ZodOptional<z.ZodEnum<[K, ...K[]]>> => {
+  const [firstKey, ...otherKeys] = Object.keys(obj) as K[];
+  return z.enum([firstKey!, ...otherKeys]).optional();
+};
+
+export const getEnum = <K extends string>(obj: Record<K, unknown>): [K, ...K[]] => {
+  const [firstKey, ...otherKeys] = Object.keys(obj) as K[];
+  return [firstKey!, ...otherKeys];
+};
+
+export const getEnumListed = <K extends string>(obj: Record<K, unknown>): K => {
+  const keys = Object.keys(obj) as K[];
+  return keys[0];
 };

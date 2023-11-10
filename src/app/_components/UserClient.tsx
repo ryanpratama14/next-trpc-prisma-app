@@ -5,10 +5,12 @@ import { Fragment, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formatDate, createUrl } from "@/lib/utils";
 import { UserType } from "@/server/schema";
+import { getEnum, getEnumListed } from "@/server/helper";
+import { UserModel } from "#/prisma/zod";
 
 export default function UserClient() {
   const router = useRouter();
-  // const utils = trpc.useUtils();
+  const utils = trpc.useUtils();
   const searchParams = useSearchParams();
   const newParams = useMemo(() => new URLSearchParams(searchParams.toString()), [searchParams]);
 
@@ -21,7 +23,6 @@ export default function UserClient() {
     page: parseInt(page),
     params: {
       name: search,
-      sortBy: "desc",
     },
   });
 
@@ -29,7 +30,7 @@ export default function UserClient() {
   const [error, setError] = useState<string[] | undefined>([]);
 
   const { data: user, isPending: isPendingUser } = trpc.user.detail.useQuery({
-    id: 16,
+    id: 12,
   });
 
   const { data: positions } = trpc.position.list.useQuery();
@@ -37,7 +38,7 @@ export default function UserClient() {
   const [userById, setUserById] = useState<UserType>({
     name: "",
     email: "",
-    positionId: undefined,
+    positionId: null,
     registeredAt: formatDate(new Date()),
   });
 
@@ -60,10 +61,10 @@ export default function UserClient() {
     },
   });
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>,
-  ) => {
-    setUserById({ ...userById, [e.target.name]: e.target.value });
+  const type = getEnumListed(UserModel.shape);
+
+  const handleChange = (name: typeof type) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUserById({ ...userById, [name]: e.target.value });
   };
 
   useEffect(() => {
@@ -168,44 +169,44 @@ export default function UserClient() {
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
-                  mutate({
-                    id: userId,
-                    body: {
-                      name: userById.name,
-                      email: userById.email,
-                      registeredAt: userById.registeredAt,
+                  mutate(
+                    {
+                      id: userId,
+                      body: userById,
                     },
-                  });
+                    {
+                      onSuccess: () => {
+                        utils.user.detail.invalidate({ id: userId });
+                      },
+                    },
+                  );
                 }}
                 className='flex flex-col gap-2'
               >
                 <input
                   placeholder='Name'
-                  onChange={handleChange}
-                  name='name'
+                  onChange={handleChange("name")}
                   value={userById.name}
                   type='text'
                   className='text-black'
                 />
                 <input
                   placeholder='Email'
-                  onChange={handleChange}
-                  name='email'
+                  onChange={handleChange("email")}
                   value={userById.email}
                   type='email'
                   className='text-black'
                 />
                 <input
-                  onChange={handleChange}
-                  name='registeredAt'
+                  onChange={handleChange("registeredAt")}
                   value={userById.registeredAt}
                   type='date'
                   className='text-black'
                 />
-
                 <select
-                  onChange={handleChange}
-                  name='positionId'
+                  onChange={(e) => {
+                    setUserById({ ...userById, positionId: parseInt(e.target.value) });
+                  }}
                   value={userById.positionId || undefined}
                 >
                   {positions?.map((position) => {

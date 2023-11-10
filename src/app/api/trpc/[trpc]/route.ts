@@ -8,8 +8,14 @@ const handler = (req: Request) =>
     req,
     router: appRouter,
     createContext: () => ({}),
-    onError: (error) => {
-      console.log("Error has occured: " + JSON.stringify(error));
+    onError: ({ error }) => {
+      console.log(
+        `${new Date().toLocaleTimeString(["id-ID"], {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        })} ${error}`,
+      );
     },
   });
 

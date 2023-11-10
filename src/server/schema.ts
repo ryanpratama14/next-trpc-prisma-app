@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { getZodEnum } from "./helper";
+import { UserModel } from "#/prisma/zod";
 
 export const SORT_BY = ["asc", "desc"] as const;
 
@@ -21,8 +23,20 @@ export class schema {
           registeredAt: z.string().optional(),
           positionName: z.string().optional(),
           sortBy: z.enum(SORT_BY).optional(),
+          orderBy: getZodEnum(UserModel.shape).optional(),
         })
-        .optional(),
+        .optional()
+        .refine(
+          (value) => {
+            const hasSortBy = value?.sortBy !== undefined;
+            const hasOrderBy = value?.orderBy !== undefined;
+            return !(hasSortBy !== hasOrderBy);
+          },
+          {
+            message: "Both sortBy and orderBy must be provided together or left empty.",
+            path: ["sortBy", "orderBy"],
+          },
+        ),
     });
 
     static create = z.object({

@@ -8,9 +8,7 @@ import { RouterInputs, RouterOutputs } from "@/server/shared";
 
 const getUserById = async (id: number) => {
   const data = await db.user.findUnique({
-    where: {
-      id,
-    },
+    where: { id },
     include: {
       position: true,
     },
@@ -115,8 +113,8 @@ export const userRouter = router({
     };
   }),
 
-  detailPrivate: privateProcedure.input(schema.user.detail).query(async (opts) => {
-    return getUserById(opts.input.id);
+  detailPrivate: privateProcedure.input(schema.user.detail).query(async ({ input }) => {
+    return getUserById(input.id);
   }),
 
   detail: publicProcedure.input(schema.user.detail).query(async ({ input }) => {
@@ -127,9 +125,7 @@ export const userRouter = router({
     const { id, body } = input;
     await getUserById(id);
     const updatedData = await db.user.update({
-      where: {
-        id,
-      },
+      where: { id },
       data: {
         name: body.name,
         email: body.email,
@@ -138,16 +134,13 @@ export const userRouter = router({
         updatedAt: generateNewDate(),
       },
     });
-
     return updatedData;
   }),
 
   delete: publicProcedure.input(schema.user.detail).mutation(async ({ input }) => {
     await getUserById(input.id);
     await db.user.delete({
-      where: {
-        id: input.id,
-      },
+      where: { id: input.id },
     });
 
     return {
