@@ -27,8 +27,6 @@ export default function UserClient() {
     },
   });
 
-  console.log(data);
-
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [error, setError] = useState<string[] | undefined>([]);
 
@@ -60,7 +58,7 @@ export default function UserClient() {
   const { mutate: deleteUser } = trpc.user.delete.useMutation({
     onSuccess: ({ message }) => {
       alert(message);
-      // utils.user.list.invalidate();
+      utils.user.invalidate();
     },
   });
 
@@ -178,7 +176,7 @@ export default function UserClient() {
                     },
                     {
                       onSuccess: () => {
-                        utils.user.detail.invalidate({ id: userId });
+                        utils.user.invalidate();
                       },
                     },
                   );
