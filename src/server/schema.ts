@@ -2,12 +2,17 @@ import { z } from "zod";
 import { getZodEnum } from "./helper";
 import { UserModel } from "#/prisma/zod";
 
-export const SORT_BY = ["asc", "desc"] as const;
-
 export class schema {
   static pagination = {
     page: z.number().min(1),
     limit: z.number().min(1).optional(),
+  };
+
+  static sorting = <K extends string>(obj: Record<K, unknown>) => {
+    return {
+      sortBy: z.enum(["asc", "desc"]).optional(),
+      orderBy: getZodEnum(obj).optional(),
+    };
   };
 
   static user = class {
@@ -22,8 +27,7 @@ export class schema {
           isActive: z.boolean().optional(),
           registeredAt: z.string().optional(),
           positionName: z.string().optional(),
-          sortBy: z.enum(SORT_BY).optional(),
-          orderBy: getZodEnum(UserModel.shape).optional(),
+          ...schema.sorting(UserModel.shape),
         })
         .optional()
         .refine(
