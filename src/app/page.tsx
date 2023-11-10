@@ -1,5 +1,5 @@
 import { trpcServer } from "./_trpc/serverClient";
-import { formatDate } from "@/lib/utils";
+import { formatDateLong } from "@/lib/utils";
 import Pagination from "./_components/Pagination";
 
 type TProps = {
@@ -29,15 +29,20 @@ export default async function Home({ searchParams }: TProps) {
             key={user.id}
             className="text-white bg-red-600 p-6 rounded-md flex flex-col gap-1"
           >
-            <p>Name: {user?.name}</p>
-            <p>Position: {user?.position?.name}</p>
-            <p>Email: {user?.email}</p>
-            <p>Date: {formatDate(user?.updatedAt)}</p>
-            <p>id: {user?.id}</p>
+            <p>Name: {user.name}</p>
+            <p>Position: {user.position?.name}</p>
+            <p>Email: {user.email}</p>
+            <p>Date: {formatDateLong(user.updatedAt)}</p>
+            <p>id: {user.id}</p>
           </section>
         );
       })}
-      <Pagination page={page} totalData={data.totalData} totalPages={data.totalPages} />
+      <Pagination
+        totalCurrentData={data.totalCurrentData}
+        search={search}
+        page={page}
+        totalPages={data.totalPages}
+      />
     </article>
   );
 }

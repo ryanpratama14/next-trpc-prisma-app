@@ -7,10 +7,7 @@ export const loadToTop = () => {
   });
 };
 
-export const createUrl = (
-  pathname: string,
-  params: URLSearchParams | ReadonlyURLSearchParams
-) => {
+export const createUrl = (pathname: string, params: URLSearchParams | ReadonlyURLSearchParams) => {
   const paramsString = params.toString();
   const queryString = `${paramsString.length ? "?" : ""}${paramsString}`;
 
@@ -38,26 +35,21 @@ export const formatDate = (dateString: Date): string => {
   return `${year}-${month}-${day}`;
 };
 
-export const generateCurrentDate = () => {
+export const formatDateLong = (date: Date): string => {
+  return date.toLocaleDateString([], {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
+
+export const getTodayDate = () => {
   const date = new Date();
   const year = date.getUTCFullYear();
   const month = String(date.getUTCMonth() + 1).padStart(2, "0");
   const day = String(date.getUTCDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 };
-
-// export const generateNewDate = (dateString?: string): Date => {
-//   if (dateString) {
-//     if (dateString.includes("T")) {
-//       return new Date(dateString);
-//     } else {
-//       const currentDate = new Date();
-//       const currentTime = currentDate.toISOString().split("T")[1];
-//       return new Date(`${dateString}T${currentTime}`);
-//     }
-//   }
-//   return new Date();
-// };
 
 export const generateNewDate = (dateString?: string): Date => {
   if (dateString) return new Date(dateString);

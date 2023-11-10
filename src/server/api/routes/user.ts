@@ -1,4 +1,3 @@
-import { TRPCError } from "@trpc/server";
 import { privateProcedure, publicProcedure, router } from "@/server/api/trpc";
 import { db } from "#/prisma/client";
 import { schema } from "@/server/schema";
@@ -10,40 +9,23 @@ import {
   prismaExclude,
   RouterInputs,
   RouterOutputs,
+  throwNotFoundError,
+  throwDataExistsError,
 } from "@/server/helper";
 
 const getUserById = async (id: number) => {
   const data = await db.user.findUnique({
     where: { id },
-    include: {
-      position: true,
-    },
+    include: { position: true },
   });
-
-  if (!data) {
-    throw new TRPCError({
-      code: "NOT_FOUND",
-      message: MESSAGES_LIST["NOT_FOUND"],
-    });
-  }
-
+  throwNotFoundError(data);
   return data;
 };
 
 export const userRouter = router({
   create: publicProcedure.input(schema.user.create).mutation(async ({ input }) => {
-    const isExist = await db.user.findUnique({
-      where: {
-        email: input.email,
-      },
-    });
-
-    if (isExist) {
-      throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: MESSAGES_LIST["ALREADY_EXISTS"],
-      });
-    }
+    const data = await db.user.findUnique({ where: { email: input.email } });
+    throwDataExistsError(data);
 
     const newData = await db.user.create({
       data: {
@@ -60,25 +42,15 @@ export const userRouter = router({
     const { pagination, params, sorting } = input;
     const optionalQueries = {
       where: {
-        name: {
-          contains: params?.name,
-        },
+        name: { contains: params?.name },
         isActive: params?.isActive,
         registeredAt: {
           gte: params?.registeredAt && generateStartDate(params.registeredAt),
           lte: params?.registeredAt && generateEndDate(params.registeredAt),
         },
-        email: {
-          contains: params?.email,
-        },
-        followers: {
-          gte: params?.followers,
-        },
-        position: {
-          name: {
-            contains: params?.positionName,
-          },
-        },
+        email: { contains: params?.email },
+        followers: { gte: params?.followers },
+        position: { name: { contains: params?.positionName } },
       },
     };
 
@@ -100,7 +72,7 @@ export const userRouter = router({
     return {
       data,
       ...pagination,
-      ...getPaginationData(totalData, pagination.limit),
+      ...getPaginationData(totalData, data.length, pagination.limit),
     };
   }),
 

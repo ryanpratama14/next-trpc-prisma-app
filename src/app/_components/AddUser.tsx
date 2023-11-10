@@ -17,6 +17,8 @@ export default function AddUser() {
   const { data: positions } = trpc.position.list.useQuery();
   const { data: user } = trpc.user.detailPrivate.useQuery({ id: 12 });
 
+  console.log(user);
+
   const { mutate } = trpc.user.create.useMutation({
     onSuccess: () => {
       setData(initialData);

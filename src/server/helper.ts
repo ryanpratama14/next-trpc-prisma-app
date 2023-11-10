@@ -1,22 +1,8 @@
 import { Prisma } from "@prisma/client";
 import { z } from "zod";
-import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
+import { TRPCError, type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import { type AppRouter } from "@/server/api/index";
 import { TPagination } from "./schema";
-
-export const getPagination = ({ limit = PAGINATION_LIMIT, page }: TPagination) => {
-  return {
-    skip: (page - 1) * limit,
-    take: limit,
-  };
-};
-
-export const getPaginationData = (totalData: number, limit: number = PAGINATION_LIMIT) => {
-  return {
-    totalPages: Math.ceil(totalData / limit),
-    totalData,
-  };
-};
 
 export const PAGINATION_LIMIT = 5;
 
@@ -132,6 +118,43 @@ const getBaseUrl = () => {
 
 export const getUrl = () => {
   return getBaseUrl() + "/api/trpc";
+};
+
+export const getPagination = ({ limit = PAGINATION_LIMIT, page }: TPagination) => {
+  return {
+    skip: (page - 1) * limit,
+    take: limit,
+  };
+};
+
+export const getPaginationData = (
+  totalData: number,
+  totalCurrentData: number,
+  limit: number = PAGINATION_LIMIT,
+) => {
+  return {
+    totalCurrentData,
+    totalData,
+    totalPages: Math.ceil(totalData / limit),
+  };
+};
+
+export const throwNotFoundError = (data: unknown) => {
+  if (!data) {
+    throw new TRPCError({
+      code: "NOT_FOUND",
+      message: MESSAGES_LIST["NOT_FOUND"],
+    });
+  }
+};
+
+export const throwDataExistsError = (data: unknown) => {
+  if (data) {
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: MESSAGES_LIST["ALREADY_EXISTS"],
+    });
+  }
 };
 
 export type RouterInputs = inferRouterInputs<AppRouter>;
