@@ -3,8 +3,14 @@ import { privateProcedure, publicProcedure, router } from "@/server/api/trpc";
 import { db } from "#/prisma/client";
 import { schema } from "@/server/schema";
 import { generateEndDate, generateNewDate, generateStartDate } from "@/lib/utils";
-import { MESSAGES_LIST, prismaExclude } from "@/server/helper";
-import { RouterInputs, RouterOutputs } from "@/server/shared";
+import {
+  MESSAGES_LIST,
+  getPagination,
+  getPaginationData,
+  prismaExclude,
+  RouterInputs,
+  RouterOutputs,
+} from "@/server/helper";
 
 const getUserById = async (id: number) => {
   const data = await db.user.findUnique({
@@ -51,33 +57,26 @@ export const userRouter = router({
   }),
 
   list: publicProcedure.input(schema.user.list).query(async ({ input }) => {
-    const limit = input.limit ?? 1;
-    const page = input.page ?? 1;
-
-    const pagination = {
-      skip: (page - 1) * limit,
-      take: limit,
-    };
-
+    const { pagination, params, sorting } = input;
     const optionalQueries = {
       where: {
         name: {
-          contains: input?.params?.name,
+          contains: params?.name,
         },
-        isActive: input?.params?.isActive,
+        isActive: params?.isActive,
         registeredAt: {
-          gte: input.params?.registeredAt && generateStartDate(input.params.registeredAt),
-          lte: input?.params?.registeredAt && generateEndDate(input.params.registeredAt),
+          gte: params?.registeredAt && generateStartDate(params.registeredAt),
+          lte: params?.registeredAt && generateEndDate(params.registeredAt),
         },
         email: {
-          contains: input?.params?.email,
+          contains: params?.email,
         },
         followers: {
-          gte: input?.params?.followers,
+          gte: params?.followers,
         },
         position: {
           name: {
-            contains: input?.params?.positionName,
+            contains: params?.positionName,
           },
         },
       },
@@ -85,31 +84,23 @@ export const userRouter = router({
 
     const [data, totalData] = await db.$transaction([
       db.user.findMany({
-        orderBy: [
-          input.params?.orderBy
-            ? { [input.params.orderBy]: input.params.sortBy }
-            : { updatedAt: "desc" },
-        ],
+        orderBy: [sorting?.orderBy ? { [sorting.orderBy]: sorting.sortBy } : { updatedAt: "desc" }],
         select: {
           ...prismaExclude("User", ["positionId", "registeredAt"]),
           position: {
             select: prismaExclude("Position", ["registeredAt", "id"]),
           },
         },
-        ...pagination,
+        ...getPagination(pagination),
         ...optionalQueries,
       }),
       db.user.count(optionalQueries),
     ]);
 
-    const totalPages = Math.ceil(totalData / limit) || 1;
-
     return {
       data,
-      limit,
-      page,
-      totalData,
-      totalPages,
+      ...pagination,
+      ...getPaginationData(totalData, pagination.limit),
     };
   }),
 

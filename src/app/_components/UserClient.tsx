@@ -19,12 +19,15 @@ export default function UserClient() {
   const search = searchParams.get("q") ?? "";
 
   const { data, isPending } = trpc.user.list.useQuery({
-    limit: 1,
-    page: parseInt(page),
+    pagination: {
+      page: parseInt(page),
+    },
     params: {
       name: search,
     },
   });
+
+  console.log(data);
 
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [error, setError] = useState<string[] | undefined>([]);

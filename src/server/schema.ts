@@ -1,23 +1,12 @@
 import { z } from "zod";
-import { getZodEnum } from "./helper";
+import { pagination, sorting } from "@/server/helper";
 import { UserModel } from "#/prisma/zod";
 
 export class schema {
-  static pagination = {
-    page: z.number().min(1),
-    limit: z.number().min(1).optional(),
-  };
-
-  static sorting = <K extends string>(obj: Record<K, unknown>) => {
-    return {
-      sortBy: z.enum(["asc", "desc"]).optional(),
-      orderBy: getZodEnum(obj).optional(),
-    };
-  };
-
   static user = class {
     static list = z.object({
-      ...schema.pagination,
+      pagination,
+      sorting: sorting(UserModel.shape),
       params: z
         .object({
           id: z.number().int().optional(),
@@ -27,20 +16,8 @@ export class schema {
           isActive: z.boolean().optional(),
           registeredAt: z.string().optional(),
           positionName: z.string().optional(),
-          ...schema.sorting(UserModel.shape),
         })
-        .optional()
-        .refine(
-          (value) => {
-            const hasSortBy = value?.sortBy !== undefined;
-            const hasOrderBy = value?.orderBy !== undefined;
-            return !(hasSortBy !== hasOrderBy);
-          },
-          {
-            message: "Both sortBy and orderBy must be provided together or left empty.",
-            path: ["sortBy", "orderBy"],
-          },
-        ),
+        .optional(),
     });
 
     static create = z.object({
