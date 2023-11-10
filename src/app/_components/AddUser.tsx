@@ -30,9 +30,7 @@ export default function AddUser() {
   });
 
   const handleChange = (
-    e:
-      | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     setData({
@@ -69,11 +67,7 @@ export default function AddUser() {
           type="email"
           onChange={handleChange}
         />
-        <select
-          onChange={handleChange}
-          name="positionId"
-          value={data.positionId || undefined}
-        >
+        <select onChange={handleChange} name="positionId" value={data.positionId || undefined}>
           {positions?.map((position) => {
             return (
               <option key={position.id} value={position.id}>

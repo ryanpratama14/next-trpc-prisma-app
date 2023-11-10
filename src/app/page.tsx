@@ -1,14 +1,43 @@
-// import UserServer from "@/app/_components/UserServer";
-import UserClient from "@/app/_components/UserClient";
-import AddUser from "@/app/_components/AddUser";
-import { Fragment } from "react";
+import { trpcServer } from "./_trpc/serverClient";
+import { formatDate } from "@/lib/utils";
+import Pagination from "./_components/Pagination";
 
-export default function Home() {
+type TProps = {
+  searchParams: {
+    [key: string]: string | undefined;
+  };
+};
+
+export default async function Home({ searchParams }: TProps) {
+  const page = searchParams.page ?? "1";
+  const search = searchParams.q ?? "";
+
+  const data = await trpcServer.user.list({
+    pagination: {
+      page: parseInt(page),
+    },
+    params: {
+      name: search,
+    },
+  });
+
   return (
-    <Fragment>
-      <AddUser />
-      {/* <UserServer /> */}
-      <UserClient />
-    </Fragment>
+    <article className="flex flex-col items-center justify-center w-[50%]">
+      {data.data.map((user) => {
+        return (
+          <section
+            key={user.id}
+            className="text-white bg-red-600 p-6 rounded-md flex flex-col gap-1"
+          >
+            <p>Name: {user?.name}</p>
+            <p>Position: {user?.position?.name}</p>
+            <p>Email: {user?.email}</p>
+            <p>Date: {formatDate(user?.updatedAt)}</p>
+            <p>id: {user?.id}</p>
+          </section>
+        );
+      })}
+      <Pagination page={page} totalData={data.totalData} totalPages={data.totalPages} />
+    </article>
   );
 }
