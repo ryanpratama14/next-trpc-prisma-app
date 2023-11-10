@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+export const SORT_BY = ["asc", "desc"] as const;
+
 export class schema {
   static pagination = {
     page: z.number().min(1),
@@ -18,6 +20,7 @@ export class schema {
           isActive: z.boolean().optional(),
           registeredAt: z.string().optional(),
           positionName: z.string().optional(),
+          sortBy: z.enum(SORT_BY).optional(),
         })
         .optional(),
     });

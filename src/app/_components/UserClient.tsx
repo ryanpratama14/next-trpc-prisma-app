@@ -10,10 +10,7 @@ export default function UserClient() {
   const router = useRouter();
   // const utils = trpc.useUtils();
   const searchParams = useSearchParams();
-  const newParams = useMemo(
-    () => new URLSearchParams(searchParams.toString()),
-    [searchParams]
-  );
+  const newParams = useMemo(() => new URLSearchParams(searchParams.toString()), [searchParams]);
 
   const page = searchParams.get("page") ?? "1";
 
@@ -24,6 +21,7 @@ export default function UserClient() {
     page: parseInt(page),
     params: {
       name: search,
+      sortBy: "desc",
     },
   });
 
@@ -63,9 +61,7 @@ export default function UserClient() {
   });
 
   const handleChange = (
-    e:
-      | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>,
   ) => {
     setUserById({ ...userById, [e.target.name]: e.target.value });
   };
@@ -78,7 +74,7 @@ export default function UserClient() {
   }, [newParams, router, page, data]);
 
   return (
-    <article className="flex items-center justify-center flex-col gap-4 min-h-screen">
+    <article className='flex items-center justify-center flex-col gap-4 min-h-screen'>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -96,40 +92,38 @@ export default function UserClient() {
       >
         <input
           key={search}
-          name="search"
-          autoComplete="off"
+          name='search'
+          autoComplete='off'
           defaultValue={search}
-          className="px-6 py-2 rounded-md border-2 border-gray-300 focus:outline-none"
-          placeholder="Search user by name"
+          className='px-6 py-2 rounded-md border-2 border-gray-300 focus:outline-none'
+          placeholder='Search user by name'
         />
       </form>
 
-      <section className="flex flex-col gap-4">
+      <section className='flex flex-col gap-4'>
         <h1>Users</h1>
         {isPending ? (
           <p>Loading...</p>
         ) : (
-          <section className="flex flex-col gap-2">
+          <section className='flex flex-col gap-2'>
             {data?.data.map((user) => {
               return (
                 <section
                   key={user.id}
-                  className="text-white bg-red-600 p-6 rounded-md flex flex-col gap-1"
+                  className='text-white bg-red-600 p-6 rounded-md flex flex-col gap-1'
                 >
                   <p>Name: {user?.name}</p>
                   <p>Position: {user?.position?.name}</p>
                   <p>Email: {user?.email}</p>
                   <p>Date: {formatDate(user?.updatedAt)}</p>
                   <p>id: {user?.id}</p>
-                  <button onClick={() => deleteUser({ id: user.id })}>
-                    Delete user
-                  </button>
+                  <button onClick={() => deleteUser({ id: user.id })}>Delete user</button>
                 </section>
               );
             })}
             {data ? (
               <Fragment>
-                <section className="flex gap-2">
+                <section className='flex gap-2'>
                   <button
                     onClick={() => {
                       const prevPage = (Number(page) - 1).toString();
@@ -141,7 +135,7 @@ export default function UserClient() {
                       router.push(createUrl("/", newParams));
                     }}
                     disabled={Number(page) === 1 || data.totalData === 0}
-                    type="button"
+                    type='button'
                   >
                     Prev Page
                   </button>
@@ -151,10 +145,8 @@ export default function UserClient() {
                       newParams.set("page", nextPage);
                       router.push(createUrl("/", newParams));
                     }}
-                    disabled={
-                      Number(page) >= data.totalPages || data.totalData === 0
-                    }
-                    type="button"
+                    disabled={Number(page) >= data.totalPages || data.totalData === 0}
+                    type='button'
                   >
                     Next Page
                   </button>
@@ -171,7 +163,7 @@ export default function UserClient() {
         {isPendingUser ? (
           <p>Loading user...</p>
         ) : (
-          <section className="text-white bg-red-600 p-6 rounded-md flex flex-col gap-1">
+          <section className='text-white bg-red-600 p-6 rounded-md flex flex-col gap-1'>
             {isEdit ? (
               <form
                 onSubmit={(e) => {
@@ -185,35 +177,35 @@ export default function UserClient() {
                     },
                   });
                 }}
-                className="flex flex-col gap-2"
+                className='flex flex-col gap-2'
               >
                 <input
-                  placeholder="Name"
+                  placeholder='Name'
                   onChange={handleChange}
-                  name="name"
+                  name='name'
                   value={userById.name}
-                  type="text"
-                  className="text-black"
+                  type='text'
+                  className='text-black'
                 />
                 <input
-                  placeholder="Email"
+                  placeholder='Email'
                   onChange={handleChange}
-                  name="email"
+                  name='email'
                   value={userById.email}
-                  type="email"
-                  className="text-black"
+                  type='email'
+                  className='text-black'
                 />
                 <input
                   onChange={handleChange}
-                  name="registeredAt"
+                  name='registeredAt'
                   value={userById.registeredAt}
-                  type="date"
-                  className="text-black"
+                  type='date'
+                  className='text-black'
                 />
 
                 <select
                   onChange={handleChange}
-                  name="positionId"
+                  name='positionId'
                   value={userById.positionId || undefined}
                 >
                   {positions?.map((position) => {
@@ -225,17 +217,14 @@ export default function UserClient() {
                   })}
                 </select>
 
-                <button
-                  className="px-6 py-2 rounded-md bg-blue-600"
-                  type="submit"
-                >
+                <button className='px-6 py-2 rounded-md bg-blue-600' type='submit'>
                   Save
                 </button>
               </form>
             ) : (
               <Fragment>
                 <button
-                  className="px-6 py-2 rounded-md bg-blue-600"
+                  className='px-6 py-2 rounded-md bg-blue-600'
                   onClick={() => {
                     setIsEdit(true);
                     if (user) {
@@ -254,9 +243,7 @@ export default function UserClient() {
                 <p>Name: {user?.name}</p>
                 <p>Position: {user?.position?.name}</p>
                 <p>Email: {user?.email}</p>
-                <p>
-                  Date: {user?.registeredAt && formatDate(user.registeredAt)}
-                </p>
+                <p>Date: {user?.registeredAt && formatDate(user.registeredAt)}</p>
                 <p>id: {user?.id}</p>
               </Fragment>
             )}
@@ -264,7 +251,7 @@ export default function UserClient() {
         )}
       </section>
       {error ? (
-        <ul className="flex flex-col font-bold text-red-600 list-disc">
+        <ul className='flex flex-col font-bold text-red-600 list-disc'>
           {error.map((error) => {
             return <li key={error}>{error}</li>;
           })}

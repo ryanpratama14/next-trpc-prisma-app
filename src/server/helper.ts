@@ -15,10 +15,7 @@ type Keys<T extends Entity> = Extract<
   string
 >;
 
-export const prismaExclude = <T extends Entity, K extends Keys<T>>(
-  type: T,
-  omit: K[]
-) => {
+export const prismaExclude = <T extends Entity, K extends Keys<T>>(type: T, omit: K[]) => {
   type Key = Exclude<Keys<T>, K>;
   type TMap = Record<Key, true>;
   const result: TMap = {} as TMap;
@@ -30,12 +27,9 @@ export const prismaExclude = <T extends Entity, K extends Keys<T>>(
   return result;
 };
 
-export const removeFieldsFromArray = <
-  T extends Record<string, any>,
-  K extends keyof T
->(
+export const removeFieldsFromArray = <T extends Record<string, any>, K extends keyof T>(
   objects: Array<T>,
-  fieldsToRemove: K[]
+  fieldsToRemove: K[],
 ): Array<Omit<T, K>> => {
   return objects.map((obj) => {
     const updatedObj = { ...obj };
@@ -46,12 +40,9 @@ export const removeFieldsFromArray = <
   });
 };
 
-export const removeFieldsFromObject = <
-  T extends Record<string, any>,
-  K extends keyof T
->(
+export const removeFieldsFromObject = <T extends Record<string, any>, K extends keyof T>(
   object: T,
-  fieldsToRemove: K[]
+  fieldsToRemove: K[],
 ): Omit<T, K> => {
   const updatedObj = { ...object };
   for (const field of fieldsToRemove) {
@@ -61,19 +52,43 @@ export const removeFieldsFromObject = <
 };
 
 export const mergeZodSchema = <T extends Entity>(
-  entity: T
+  entity: T,
 ): z.ZodObject<Record<Keys<T>, z.ZodString>, "strip"> => {
   const entityFields: Keys<T>[] = Object.keys(
-    (Prisma as any)[`${entity}ScalarFieldEnum`]
+    (Prisma as any)[`${entity}ScalarFieldEnum`],
   ) as Keys<T>[];
 
   const schema = entityFields.reduce((schema, field) => {
     return schema.merge(
       z.object({
         [field]: z.string().optional(),
-      })
+      }),
     );
   }, z.object({}));
 
   return schema as z.ZodObject<Record<Keys<T>, z.ZodString>, "strip">;
+};
+
+export const generateKeysFromZod = <T extends z.ZodTypeAny, K extends keyof T["_type"]>(
+  schema: T,
+): Array<K & string> => {
+  if (schema === null || schema === undefined) return [];
+  if (schema instanceof z.ZodNullable || schema instanceof z.ZodOptional)
+    return generateKeysFromZod(schema.unwrap());
+  if (schema instanceof z.ZodArray) return generateKeysFromZod(schema.element);
+  if (schema instanceof z.ZodObject) {
+    const entries = Object.entries(schema.shape);
+    return entries.flatMap(([key, value]) => {
+      if (value instanceof z.ZodEnum) {
+        // Handle ZodEnum separately
+        return value.Enum as Array<K & string>;
+      }
+      const nested =
+        value instanceof z.ZodType
+          ? generateKeysFromZod(value).map(() => `${key}` as K & string)
+          : [];
+      return nested.length ? nested : [key as K & string];
+    });
+  }
+  return [];
 };
