@@ -7,7 +7,7 @@ import { trpc } from "@/app/_trpc/client";
 import SuperJSON from "superjson";
 import { getUrl } from "@/server/helper";
 
-export default function Provider({ children }: { children: React.ReactNode }) {
+export default function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => new QueryClient({}));
   const [trpcClient] = useState(() =>
     trpc.createClient({
@@ -19,6 +19,7 @@ export default function Provider({ children }: { children: React.ReactNode }) {
       ],
     }),
   );
+
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
