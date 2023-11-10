@@ -52,8 +52,6 @@ export const removeFieldsFromObject = <T extends Record<string, any>, K extends 
   const updatedObj = structuredClone(object);
   for (const field of fieldsToRemove) {
     delete updatedObj[field];
-    {
-    }
   }
   return updatedObj;
 };
