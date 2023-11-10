@@ -2,18 +2,9 @@ import { Prisma } from "@prisma/client";
 import { z } from "zod";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import { type AppRouter } from "@/server/api/index";
+import { TPagination } from "./schema";
 
-export const pagination = z.object({
-  page: z.number().min(1),
-  limit: z.number().min(1).optional(),
-});
-
-export type TPagination = z.infer<typeof pagination>;
-
-export const getPagination = ({
-  limit = PAGINATION_LIMIT,
-  page,
-}: TPagination): { skip: number; take: number } => {
+export const getPagination = ({ limit = PAGINATION_LIMIT, page }: TPagination) => {
   return {
     skip: (page - 1) * limit,
     take: limit,
@@ -25,26 +16,6 @@ export const getPaginationData = (totalData: number, limit: number = PAGINATION_
     totalPages: Math.ceil(totalData / limit),
     totalData,
   };
-};
-
-export const sorting = <K extends string>(obj: Record<K, unknown>) => {
-  return z
-    .object({
-      sortBy: z.enum(["asc", "desc"]).optional(),
-      orderBy: getZodEnum(obj).optional(),
-    })
-    .optional()
-    .refine(
-      (value) => {
-        const hasSortBy = value?.sortBy !== undefined;
-        const hasOrderBy = value?.orderBy !== undefined;
-        return !(hasSortBy !== hasOrderBy);
-      },
-      {
-        message: "Both sortBy and orderBy must be provided together or left empty.",
-        path: ["sortBy", "orderBy"],
-      },
-    );
 };
 
 export const PAGINATION_LIMIT = 5;
