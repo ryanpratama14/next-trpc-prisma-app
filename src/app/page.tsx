@@ -4,14 +4,12 @@ import Pagination from "./_components/Pagination";
 import { sortBy } from "@/server/helper";
 
 type TProps = {
-  searchParams: {
-    [key: string]: string[] | string | undefined;
-  };
+  searchParams?: { [key: string]: string | undefined };
 };
 
 export default async function Home({ searchParams }: TProps) {
   const {
-    page = searchParams.page ?? "1",
+    page = searchParams?.page ?? "1",
     q: search,
     sort,
   } = searchParams as { [key: string]: string };
