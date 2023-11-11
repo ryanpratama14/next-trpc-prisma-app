@@ -8,10 +8,10 @@ generator zod {
   prismaJsonNullability = true
 }
 
-generator zod_2 {
-  provider = "zod-prisma-types"
-  output   = "../src/server/schema/generated/zod-prisma-types"
-}
+// generator zod_2 {
+//   provider = "zod-prisma-types"
+//   output   = "../src/server/schema/generated/zod-prisma-types"
+// }
 
 generator client {
   provider = "prisma-client-js"
