@@ -16,7 +16,7 @@ export default async function Home({ searchParams }: TProps) {
     pagination: {
       page: parseInt(page),
     },
-    sorting: [],
+
     params: {
       name: search,
     },
