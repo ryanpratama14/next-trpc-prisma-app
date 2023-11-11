@@ -43,6 +43,7 @@ export default async function Home({ searchParams }: TProps) {
         );
       })}
       <Pagination
+        sort={sort}
         totalCurrentData={data.totalCurrentData}
         search={search}
         page={page}

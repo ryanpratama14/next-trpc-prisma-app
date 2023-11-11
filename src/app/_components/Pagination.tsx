@@ -10,11 +10,13 @@ export default function Pagination({
   totalCurrentData,
   page,
   search,
+  sort,
 }: {
   totalCurrentData: number;
   totalPages: number;
   page: string;
   search: string;
+  sort: string;
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -90,6 +92,7 @@ export default function Pagination({
                 router.push(createUrl("/", newParams));
               }}
               key={item.slug}
+              className={`transition-all ${sort === item.slug ? "text-red-500" : ""}`}
             >
               {item.title}
             </button>
