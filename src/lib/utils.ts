@@ -1,4 +1,6 @@
 import { ReadonlyURLSearchParams } from "next/navigation";
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export const loadToTop = () => {
   window.scrollTo({
@@ -54,4 +56,8 @@ export const getTodayDate = () => {
 export const generateNewDate = (dateString?: string): Date => {
   if (dateString) return new Date(dateString);
   return new Date();
+};
+
+export const cn = (...inputs: ClassValue[]) => {
+  return twMerge(clsx(inputs));
 };

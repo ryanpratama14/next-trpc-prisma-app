@@ -1,6 +1,6 @@
 "use client";
 
-import { createUrl } from "@/lib/utils";
+import { cn, createUrl } from "@/lib/utils";
 import { sortBy } from "@/server/helper";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Fragment, useEffect, useMemo } from "react";
@@ -85,6 +85,7 @@ export default function Pagination({
       </p>
       <section className="flex flex-col">
         {sortBy.map((item) => {
+          const active = sort === item.slug;
           return (
             <button
               onClick={() => {
@@ -92,7 +93,9 @@ export default function Pagination({
                 router.push(createUrl("/", newParams));
               }}
               key={item.slug}
-              className={`transition-all ${sort === item.slug ? "text-red-500" : ""}`}
+              className={cn("transition-all", {
+                "text-red-500": active,
+              })}
             >
               {item.title}
             </button>
