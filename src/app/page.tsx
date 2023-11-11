@@ -5,7 +5,7 @@ import { sortBy } from "@/server/helper";
 
 type TProps = {
   searchParams: {
-    [key: string]: string | undefined;
+    [key: string]: string[] | string | undefined;
   };
 };
 
@@ -20,7 +20,7 @@ export default async function Home({ searchParams }: TProps) {
 
   const data = await trpcServer.user.list({
     pagination: {
-      page: parseInt(page) || 1,
+      page: Number(page),
     },
     sorting: sorterer ? [{ [sorterer.sortKey as string]: sorterer.value }] : [],
     params: {
