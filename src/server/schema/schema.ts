@@ -1,4 +1,3 @@
-import { UserFindManySchema } from "#/prisma/zod-prisma-generator/schemas";
 import { z } from "zod";
 
 export const pagination = z.object({
@@ -6,11 +5,13 @@ export const pagination = z.object({
   limit: z.number().min(1).optional(),
 });
 
+export const sorting = z.array(z.record(z.enum(["asc", "desc"]))).optional();
+
 export class schema {
   static user = class {
     static list = z.object({
       pagination,
-      sorting: UserFindManySchema.shape.orderBy,
+      sorting,
       params: z
         .object({
           id: z.number().int().optional(),

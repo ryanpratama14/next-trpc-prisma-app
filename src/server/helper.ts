@@ -2,7 +2,7 @@ import { Prisma } from "@prisma/client";
 import { z } from "zod";
 import { TRPCError, type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import { type AppRouter } from "@/server/api/index";
-import { TPagination } from "./schema";
+import { TPagination } from "./schema/schema";
 
 export const PAGINATION_LIMIT = 5;
 

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { trpc } from "@/app/_trpc/client";
-import { UserType } from "@/server/schema";
+import { UserType } from "@/server/schema/schema";
 import { formatDate } from "@/lib/utils";
 
 const initialData: UserType = {

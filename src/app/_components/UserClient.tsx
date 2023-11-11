@@ -4,9 +4,9 @@ import { trpc } from "@/app/_trpc/client";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formatDate, createUrl } from "@/lib/utils";
-import { UserType } from "@/server/schema";
+import { UserType } from "@/server/schema/schema";
 import { getEnumKeys } from "@/server/helper";
-import { UserModel } from "#/prisma/zod";
+import { UserModel } from "@/server/schema/generated";
 
 export default function UserClient() {
   const router = useRouter();

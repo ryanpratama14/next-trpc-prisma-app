@@ -5,7 +5,7 @@ import {
   throwDataExistsError,
   throwNotFoundError,
 } from "@/server/helper";
-import { schema } from "@/server/schema";
+import { schema } from "@/server/schema/schema";
 import { publicProcedure, router } from "@/server/api/trpc";
 
 const getPositionById = async (id: number) => {

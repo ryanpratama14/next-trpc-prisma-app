@@ -1,6 +1,6 @@
 import { privateProcedure, publicProcedure, router } from "@/server/api/trpc";
 import { db } from "#/prisma/client";
-import { schema } from "@/server/schema";
+import { schema } from "@/server/schema/schema";
 import { generateEndDate, generateNewDate, generateStartDate } from "@/lib/utils";
 import {
   MESSAGES_LIST,
@@ -56,7 +56,7 @@ export const userRouter = router({
 
     const [data, totalData] = await db.$transaction([
       db.user.findMany({
-        orderBy: sorting ? sorting : [{ updatedAt: "desc" }],
+        orderBy: sorting ? sorting : { updatedAt: "desc" },
         select: {
           ...prismaExclude("User", ["positionId", "registeredAt"]),
           position: {
