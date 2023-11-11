@@ -18,6 +18,7 @@
     "@uidotdev/usehooks": "^2.4.1",
     "next": "14.0.2",
     "prisma": "^5.5.2",
+    "prisma-zod-generator": "^0.8.13",
     "react": "^18",
     "react-dom": "^18",
     "superjson": "^2.2.1",

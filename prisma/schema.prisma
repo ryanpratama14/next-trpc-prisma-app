@@ -1,11 +1,16 @@
 generator zod {
   provider              = "zod-prisma"
-  output                = "./zod"
+  output                = "./zod-prisma"
   relationModel         = true
   modelCase             = "PascalCase"
   modelSuffix           = "Model"
   useDecimalJs          = true
   prismaJsonNullability = true
+}
+
+generator zod_2 {
+  provider = "prisma-zod-generator"
+  output   = "./zod-prisma-generator"
 }
 
 generator client {

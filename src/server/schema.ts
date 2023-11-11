@@ -1,37 +1,16 @@
+import { UserFindManySchema } from "#/prisma/zod-prisma-generator/schemas";
 import { z } from "zod";
-import { getZodEnum } from "@/server/helper";
-import { UserModel } from "#/prisma/zod";
 
 export const pagination = z.object({
   page: z.number().min(1),
   limit: z.number().min(1).optional(),
 });
 
-export const sorting = <K extends string>(obj: Record<K, unknown>) => {
-  return z
-    .object({
-      sortBy: z.enum(["asc", "desc"]).optional(),
-      orderBy: getZodEnum(obj).optional(),
-    })
-    .optional()
-    .refine(
-      (value) => {
-        const hasSortBy = value?.sortBy !== undefined;
-        const hasOrderBy = value?.orderBy !== undefined;
-        return !(hasSortBy !== hasOrderBy);
-      },
-      {
-        message: "Both sortBy and orderBy must be provided together or left empty.",
-        path: ["sortBy", "orderBy"],
-      },
-    );
-};
-
 export class schema {
   static user = class {
     static list = z.object({
       pagination,
-      sorting: sorting(UserModel.shape),
+      sorting: UserFindManySchema.shape.orderBy,
       params: z
         .object({
           id: z.number().int().optional(),
