@@ -84,23 +84,21 @@ export default function Pagination({
         Page {page} / {totalPages}
       </p>
       <section className="flex flex-col">
-        {sortBy.map((item) => {
-          const active = sort === item.slug;
-          return (
-            <button
-              onClick={() => {
-                newParams.set("sort", item.slug);
-                router.push(createUrl("/", newParams));
-              }}
-              key={item.slug}
-              className={cn("transition-all", {
-                "text-red-500": active,
-              })}
-            >
-              {item.title}
-            </button>
-          );
-        })}
+        <select
+          value={sort}
+          onChange={(e) => {
+            newParams.set("sort", e.target.value);
+            router.push(createUrl("/", newParams));
+          }}
+        >
+          {sortBy.map((opt) => {
+            return (
+              <option key={opt.slug} value={opt.slug}>
+                {opt.title}
+              </option>
+            );
+          })}
+        </select>
       </section>
     </Fragment>
   );
