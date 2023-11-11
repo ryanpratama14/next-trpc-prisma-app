@@ -1,6 +1,7 @@
 import { trpcServer } from "./_trpc/serverClient";
 import { formatDateLong } from "@/lib/utils";
 import Pagination from "./_components/Pagination";
+import { sortBy } from "@/server/helper";
 
 type TProps = {
   searchParams: {
@@ -9,14 +10,19 @@ type TProps = {
 };
 
 export default async function Home({ searchParams }: TProps) {
-  const page = searchParams.page ?? "1";
-  const search = searchParams.q ?? "";
+  const {
+    page = searchParams.page ?? "1",
+    q: search,
+    sort,
+  } = searchParams as { [key: string]: string };
+
+  const sorterer = sortBy.find((item) => item.slug === sort);
 
   const data = await trpcServer.user.list({
     pagination: {
-      page: parseInt(page),
+      page: parseInt(page) || 1,
     },
-
+    sorting: sorterer ? [{ [sorterer.sortKey as string]: sorterer.value }] : [],
     params: {
       name: search,
     },

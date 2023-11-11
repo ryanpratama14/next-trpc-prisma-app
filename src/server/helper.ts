@@ -3,6 +3,7 @@ import { z } from "zod";
 import { TRPCError, type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import { type AppRouter } from "@/server/api/index";
 import { TPagination } from "./schema/schema";
+import { UserModel } from "./schema/generated/zod-prisma";
 
 export const PAGINATION_LIMIT = 5;
 
@@ -157,3 +158,17 @@ export const throwDataExistsError = (data: unknown) => {
 
 export type RouterInputs = inferRouterInputs<AppRouter>;
 export type RouterOutputs = inferRouterOutputs<AppRouter>;
+
+export const UserKeys = getEnumKeys(UserModel.shape);
+
+export type SortFilterItem = {
+  title: string;
+  slug: string;
+  sortKey: typeof UserKeys;
+  value: "asc" | "desc";
+};
+
+export const sortBy: SortFilterItem[] = [
+  { title: "User", slug: "user-desc", sortKey: "name", value: "desc" }, // asc
+  { title: "Latest update", slug: "updatedAt-desc", sortKey: "followers", value: "desc" },
+];

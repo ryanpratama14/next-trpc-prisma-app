@@ -1,6 +1,7 @@
 "use client";
 
 import { createUrl } from "@/lib/utils";
+import { sortBy } from "@/server/helper";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Fragment, useEffect, useMemo } from "react";
 
@@ -80,6 +81,21 @@ export default function Pagination({
       <p>
         Page {page} / {totalPages}
       </p>
+      <section className="flex flex-col">
+        {sortBy.map((item) => {
+          return (
+            <button
+              onClick={() => {
+                newParams.set("sort", item.slug);
+                router.push(createUrl("/", newParams));
+              }}
+              key={item.slug}
+            >
+              {item.title}
+            </button>
+          );
+        })}
+      </section>
     </Fragment>
   );
 }

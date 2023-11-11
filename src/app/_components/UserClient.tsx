@@ -5,7 +5,7 @@ import { Fragment, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formatDate, createUrl } from "@/lib/utils";
 import { UserType } from "@/server/schema/schema";
-import { getEnumKeys } from "@/server/helper";
+import { UserKeys, getEnumKeys } from "@/server/helper";
 import { UserModel } from "@/server/schema/generated/zod-prisma";
 
 export default function UserClient() {
@@ -61,8 +61,7 @@ export default function UserClient() {
     },
   });
 
-  const userKeys = getEnumKeys(UserModel.shape);
-  const handleChange = (name: typeof userKeys) => (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (name: typeof UserKeys) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserById({ ...userById, [name]: e.target.value });
   };
 
