@@ -16,11 +16,7 @@ export default async function Home({ searchParams }: TProps) {
     pagination: {
       page: parseInt(page),
     },
-    sorting: [
-      {
-        email: "desc",
-      },
-    ],
+    sorting: [],
     params: {
       name: search,
     },
