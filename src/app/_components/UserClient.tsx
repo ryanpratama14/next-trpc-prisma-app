@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { formatDate, createUrl } from "@/lib/utils";
 import { UserType } from "@/server/schema/schema";
 import { getEnumKeys } from "@/server/helper";
-import { UserModel } from "@/server/schema/generated";
+import { UserModel } from "@/server/schema/generated/zod-prisma";
 
 export default function UserClient() {
   const router = useRouter();

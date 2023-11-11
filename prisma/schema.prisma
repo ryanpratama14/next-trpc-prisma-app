@@ -1,6 +1,6 @@
 generator zod {
   provider              = "zod-prisma"
-  output                = "../src/server/schema/generated"
+  output                = "../src/server/schema/generated/zod-prisma"
   relationModel         = true
   modelCase             = "PascalCase"
   modelSuffix           = "Model"
@@ -8,15 +8,10 @@ generator zod {
   prismaJsonNullability = true
 }
 
-// generator zod_2 {
-//   provider = "prisma-zod-generator"
-//   output   = "./zod-prisma-generator"
-// }
-
-// generator zod_3 {
-//   provider = "zod-prisma-types"
-//   output   = "./zod-prisma-types"
-// }
+generator zod_2 {
+  provider = "zod-prisma-types"
+  output   = "../src/server/schema/generated/zod-prisma-types"
+}
 
 generator client {
   provider = "prisma-client-js"
