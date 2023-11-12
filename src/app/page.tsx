@@ -6,7 +6,7 @@ import { Fragment } from "react";
 import { PAGINATION_LIMIT } from "@/server/helper";
 
 type TProps = {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: { [key: string]: string | undefined };
 };
 
 export default async function Home({ searchParams }: TProps) {
@@ -24,7 +24,7 @@ export default async function Home({ searchParams }: TProps) {
       page: Number(page),
       limit: Number(limit),
     },
-    sorting: sorterer ? [{ [sorterer.sortKey as string]: sorterer.value }] : [],
+    sorting: sorterer ? [{ [sorterer.sortKey]: sorterer.value }] : [],
     params: {
       name: search,
     },
@@ -48,8 +48,8 @@ export default async function Home({ searchParams }: TProps) {
           );
         })}
         <Pagination
-          sort={sort as string}
-          page={page as string}
+          sort={sort}
+          page={page}
           search={search}
           totalPages={data.totalPages}
           hasNextPage={data.hasNextPage}
