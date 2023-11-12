@@ -1,7 +1,7 @@
 import { privateProcedure, publicProcedure, router } from "@/server/api/trpc";
 import { db } from "#/prisma/client";
 import { schema } from "@/server/schema/schema";
-import { generateEndDate, generateNewDate, generateStartDate } from "@/lib/utils";
+import { getEndDate, getNewDate, getStartDate } from "@/lib/utils";
 import {
   MESSAGES_LIST,
   getPagination,
@@ -45,8 +45,8 @@ export const userRouter = router({
         name: { contains: params?.name },
         isActive: params?.isActive,
         registeredAt: {
-          gte: params?.registeredAt && generateStartDate(params.registeredAt),
-          lte: params?.registeredAt && generateEndDate(params.registeredAt),
+          gte: params?.registeredAt && getStartDate(params.registeredAt),
+          lte: params?.registeredAt && getEndDate(params.registeredAt),
         },
         email: { contains: params?.email },
         followers: { gte: params?.followers },
@@ -92,8 +92,8 @@ export const userRouter = router({
         name: body.name,
         email: body.email,
         positionId: body.positionId,
-        registeredAt: generateNewDate(body.registeredAt),
-        updatedAt: generateNewDate(),
+        registeredAt: getNewDate(body.registeredAt),
+        updatedAt: getNewDate(),
       },
     });
     return updatedData;
