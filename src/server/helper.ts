@@ -127,13 +127,21 @@ export const getPagination = ({ limit = PAGINATION_LIMIT, page }: TPagination) =
 
 export const getPaginationData = (
   totalData: number,
-  totalCurrentData: number,
   limit: number = PAGINATION_LIMIT,
+  page: number,
 ) => {
+  const totalPages = Math.ceil(totalData / limit) || 1;
+  const start = (page - 1) * limit;
+  const end = start + limit;
+
   return {
-    totalCurrentData,
+    limit,
+    page,
     totalData,
-    totalPages: Math.ceil(totalData / limit),
+    totalPages,
+    hasNextPage: end < totalData,
+    hasPrevPage: start > 0,
+    isInvalidPage: page > totalPages,
   };
 };
 

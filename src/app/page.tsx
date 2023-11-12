@@ -3,14 +3,16 @@ import { formatDateLong } from "@/lib/utils";
 import Pagination from "@/components/Pagination";
 import { sortBy } from "@/lib/constants";
 import { Fragment } from "react";
+import { PAGINATION_LIMIT } from "@/server/helper";
 
 type TProps = {
-  searchParams?: { [key: string]: string | undefined };
+  searchParams: { [key: string]: string | string[] | undefined };
 };
 
 export default async function Home({ searchParams }: TProps) {
   const {
-    page = searchParams?.page ?? "1",
+    page = searchParams.page ?? "1",
+    limit = searchParams.limit ?? PAGINATION_LIMIT.toString(),
     q: search,
     sort,
   } = searchParams as { [key: string]: string };
@@ -20,6 +22,7 @@ export default async function Home({ searchParams }: TProps) {
   const data = await trpcServer.user.list({
     pagination: {
       page: Number(page),
+      limit: Number(limit),
     },
     sorting: sorterer ? [{ [sorterer.sortKey as string]: sorterer.value }] : [],
     params: {
@@ -46,10 +49,12 @@ export default async function Home({ searchParams }: TProps) {
         })}
         <Pagination
           sort={sort}
-          totalCurrentData={data.totalCurrentData}
           search={search}
-          page={page}
+          page={page as string}
           totalPages={data.totalPages}
+          hasNextPage={data.hasNextPage}
+          hasPrevPage={data.hasPrevPage}
+          isInvalidPage={data.isInvalidPage}
         />
       </article>
     </Fragment>

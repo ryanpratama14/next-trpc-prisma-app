@@ -71,8 +71,7 @@ export const userRouter = router({
 
     return {
       data,
-      ...pagination,
-      ...getPaginationData(totalData, data.length, pagination.limit),
+      ...getPaginationData(totalData, pagination.limit, pagination.page),
     };
   }),
 

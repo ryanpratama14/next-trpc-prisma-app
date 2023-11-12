@@ -2,29 +2,33 @@
 
 import { sortBy } from "@/lib/constants";
 import { createUrl } from "@/lib/utils";
-import { useRouter, useSearchParams } from "next/navigation";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
 import { Fragment } from "react";
 
 export default function Pagination({
   totalPages,
-  totalCurrentData,
   page,
   search,
   sort,
+  hasPrevPage,
+  hasNextPage,
+  isInvalidPage,
 }: {
-  totalCurrentData: number;
   totalPages: number;
   page: string;
   search: string;
   sort: string;
+  hasPrevPage: boolean;
+  hasNextPage: boolean;
+  isInvalidPage: boolean;
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const newParams = new URLSearchParams(searchParams.toString());
 
-  if (!totalCurrentData) {
+  if (isInvalidPage) {
     newParams.delete("page");
-    router.push(createUrl("/", newParams));
+    redirect(createUrl("/", newParams));
   }
 
   return (
@@ -61,7 +65,7 @@ export default function Pagination({
             } else newParams.set("page", prevPage);
             router.push(createUrl("/", newParams));
           }}
-          disabled={Number(page) === 1}
+          disabled={!hasPrevPage}
           type="button"
         >
           Prev Page
@@ -72,7 +76,7 @@ export default function Pagination({
             newParams.set("page", nextPage);
             router.push(createUrl("/", newParams));
           }}
-          disabled={Number(page) === totalPages}
+          disabled={!hasNextPage}
           type="button"
         >
           Next Page
