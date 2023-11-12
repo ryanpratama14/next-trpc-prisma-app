@@ -1,9 +1,8 @@
 import { trpcServer } from "./_trpc/serverClient";
 import { formatDateLong } from "@/lib/utils";
-import Pagination from "./_components/Pagination";
+import Pagination from "@/components/Pagination";
 import { sortBy } from "@/lib/constants";
 import { Fragment } from "react";
-import UserClient from "./_components/UserClient";
 
 type TProps = {
   searchParams?: { [key: string]: string | undefined };
@@ -30,7 +29,6 @@ export default async function Home({ searchParams }: TProps) {
 
   return (
     <Fragment>
-      <UserClient />
       <article className="flex flex-col items-center justify-center w-[50%]">
         {data.data.map((user) => {
           return (
