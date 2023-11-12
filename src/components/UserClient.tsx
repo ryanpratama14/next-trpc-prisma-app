@@ -1,7 +1,7 @@
 "use client";
 
 import { trpc } from "@/app/_trpc/client";
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formatDate, createUrl } from "@/lib/utils";
 import { UserKeys, UserType } from "@/server/schema/schema";
@@ -10,7 +10,7 @@ export default function UserClient() {
   const router = useRouter();
   const utils = trpc.useUtils();
   const searchParams = useSearchParams();
-  const newParams = useMemo(() => new URLSearchParams(searchParams.toString()), [searchParams]);
+  const newParams = new URLSearchParams(searchParams.toString());
 
   const page = searchParams.get("page") ?? "1";
   const search = searchParams.get("q") ?? "";
@@ -63,12 +63,10 @@ export default function UserClient() {
     setUserById({ ...userById, [name]: e.target.value });
   };
 
-  useEffect(() => {
-    if (Number(page) < 1 || (data && !data.data.length)) {
-      newParams.delete("page");
-      router.push(createUrl("/", newParams));
-    }
-  }, [newParams, router, page, data]);
+  if (Number(page) < 1 || (data && !data.data.length)) {
+    newParams.delete("page");
+    router.push(createUrl("/", newParams));
+  }
 
   return (
     <article className="flex items-center justify-center flex-col gap-4 min-h-screen">

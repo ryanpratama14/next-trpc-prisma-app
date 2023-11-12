@@ -3,7 +3,7 @@
 import { sortBy } from "@/lib/constants";
 import { createUrl } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Fragment, useEffect, useMemo } from "react";
+import { Fragment } from "react";
 
 export default function Pagination({
   totalPages,
@@ -20,14 +20,12 @@ export default function Pagination({
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const newParams = useMemo(() => new URLSearchParams(searchParams.toString()), [searchParams]);
+  const newParams = new URLSearchParams(searchParams.toString());
 
-  useEffect(() => {
-    if (!totalCurrentData) {
-      newParams.delete("page");
-      router.push(createUrl("/", newParams));
-    }
-  }, [newParams, router, totalCurrentData]);
+  if (!totalCurrentData) {
+    newParams.delete("page");
+    router.push(createUrl("/", newParams));
+  }
 
   return (
     <Fragment>
