@@ -143,7 +143,7 @@ export const getPaginationData = (
     totalPages,
     hasNextPage: end < totalData,
     hasPrevPage: start > 0,
-    isInvalidPage: page > totalPages,
+    isInvalidPage: page > totalPages || page < 1,
   };
 };
 

@@ -27,8 +27,7 @@ export default function Pagination({
   const newParams = new URLSearchParams(searchParams.toString());
 
   if (isInvalidPage) {
-    newParams.delete("page");
-    redirect(createUrl("/", newParams));
+    redirect("/");
   }
 
   return (
@@ -89,10 +88,9 @@ export default function Pagination({
         <select
           value={sort}
           onChange={(e) => {
-            const value = e.target.value;
-            if (value === defaultSort.slug) {
+            if (e.target.value === defaultSort.slug) {
               newParams.delete("sort");
-            } else newParams.set("sort", value);
+            } else newParams.set("sort", e.target.value);
             router.push(createUrl("/", newParams));
           }}
         >
