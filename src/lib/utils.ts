@@ -16,20 +16,23 @@ export const createUrl = (pathname: string, params: URLSearchParams | ReadonlyUR
   return `${pathname}${queryString}`;
 };
 
-export const createSearchParams = (params: {
-  [key: string]: string | string[];
-}): URLSearchParams => {
-  const searchParams = new URLSearchParams();
+export const createSearchParams = (
+  params: {
+    [key: string]: string | string[];
+  },
+  newParams?: URLSearchParams,
+): URLSearchParams => {
+  const updatedParams = newParams ? newParams : new URLSearchParams();
   Object.entries(params).forEach(([key, values]) => {
     if (Array.isArray(values)) {
       values.forEach((value) => {
-        searchParams.append(key, value);
+        updatedParams.append(key, value);
       });
     } else {
-      searchParams.append(key, values);
+      updatedParams.append(key, values);
     }
   });
-  return searchParams;
+  return updatedParams;
 };
 
 export const getTodayDate = () => {

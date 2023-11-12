@@ -1,30 +1,30 @@
 import { trpcServer } from "./_trpc/serverClient";
 import { formatDateLong } from "@/lib/utils";
 import Pagination from "@/components/Pagination";
-import { defaultSort, sortBy } from "@/lib/constants";
+import { sortBy } from "@/lib/constants";
 import { Fragment } from "react";
 import { PAGINATION_LIMIT } from "@/server/helper";
 
 type TProps = {
-  searchParams: { [key: string]: string | undefined };
+  searchParams: { [key: string]: string | string[] | undefined };
 };
 
 export default async function Home({ searchParams }: TProps) {
   const {
     page = searchParams.page ?? "1",
     limit = searchParams.limit ?? PAGINATION_LIMIT.toString(),
-    sort = searchParams.sort ?? defaultSort.slug,
+    sort = searchParams.sort ?? [],
     q: search,
   } = searchParams as { [key: string]: string };
 
-  const sorterer = sortBy.find((item) => item.slug === sort) || defaultSort;
+  const sorterer = sortBy.filter((item) => sort.includes(item.slug));
 
   const data = await trpcServer.user.list({
     pagination: {
       page: Number(page),
       limit: Number(limit),
     },
-    sorting: { [sorterer.sortKey]: sorterer.value },
+    sorting: sorterer.length ? sorterer.map((item) => ({ [item.sortKey]: item.value })) : undefined,
     params: {
       name: search,
     },
@@ -48,8 +48,7 @@ export default async function Home({ searchParams }: TProps) {
           );
         })}
         <Pagination
-          sort={sort}
-          page={page}
+          page={page as string}
           search={search}
           totalPages={data.totalPages}
           hasNextPage={data.hasNextPage}

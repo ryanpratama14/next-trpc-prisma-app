@@ -7,14 +7,8 @@ export type SortFilterItem = {
   value: "asc" | "desc";
 };
 
-export const defaultSort: SortFilterItem = {
-  title: "Latest update",
-  slug: "updatedAt-desc",
-  sortKey: "updatedAt",
-  value: "desc",
-};
-
 export const sortBy: SortFilterItem[] = [
   { title: "Name", slug: "name-desc", sortKey: "name", value: "desc" },
-  defaultSort,
+  { title: "Email", slug: "email-desc", sortKey: "email", value: "desc" },
+  { title: "Date Joined", slug: "datejoined-desc", sortKey: "registeredAt", value: "asc" },
 ];
