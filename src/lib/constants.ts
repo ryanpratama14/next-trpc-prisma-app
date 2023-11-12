@@ -10,11 +10,11 @@ export type SortFilterItem = {
 export const defaultSort: SortFilterItem = {
   title: "Latest update",
   slug: "updatedAt-desc",
-  sortKey: "followers",
+  sortKey: "updatedAt",
   value: "desc",
 };
 
 export const sortBy: SortFilterItem[] = [
-  { title: "User", slug: "user-desc", sortKey: "name", value: "desc" },
+  { title: "Name", slug: "name-desc", sortKey: "name", value: "desc" },
   defaultSort,
 ];

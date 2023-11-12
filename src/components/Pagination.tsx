@@ -1,7 +1,7 @@
 "use client";
 
 import { defaultSort, sortBy } from "@/lib/constants";
-import { createUrl } from "@/lib/utils";
+import { cn, createUrl } from "@/lib/utils";
 import { redirect, useRouter, useSearchParams } from "next/navigation";
 import { Fragment } from "react";
 
@@ -86,23 +86,25 @@ export default function Pagination({
         Page {page} / {totalPages}
       </p>
       <section className="flex flex-col">
-        <select
-          value={sort}
-          onChange={(e) => {
-            if (e.target.value === defaultSort.slug) {
-              newParams.delete("sort");
-            } else newParams.set("sort", e.target.value);
-            router.push(createUrl("/", newParams));
-          }}
-        >
-          {sortBy.map((opt) => {
-            return (
-              <option key={opt.slug} value={opt.slug}>
-                {opt.title}
-              </option>
-            );
-          })}
-        </select>
+        {sortBy.map((item) => {
+          const active = item.slug === sort;
+          return (
+            <button
+              className={cn("transition-all", {
+                "text-red-500": active,
+              })}
+              key={item.sortKey}
+              onClick={() => {
+                if (item.slug === defaultSort.slug) {
+                  newParams.delete("sort");
+                } else newParams.set("sort", item.slug);
+                router.push(createUrl("/", newParams));
+              }}
+            >
+              {item.title}
+            </button>
+          );
+        })}
       </section>
     </Fragment>
   );

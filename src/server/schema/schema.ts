@@ -7,7 +7,7 @@ export const pagination = z.object({
   limit: z.number().min(1).optional(),
 });
 
-export const sorting = z.array(z.record(z.enum(["asc", "desc"]))).optional();
+export const sorting = z.record(z.enum(["asc", "desc"])).optional();
 
 export class schema {
   static user = class {
