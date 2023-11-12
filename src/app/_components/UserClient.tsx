@@ -4,9 +4,7 @@ import { trpc } from "@/app/_trpc/client";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formatDate, createUrl } from "@/lib/utils";
-import { UserType } from "@/server/schema/schema";
-import { UserKeys, getEnumKeys } from "@/server/helper";
-import { UserModel } from "@/server/schema/generated/zod-prisma";
+import { UserKeys, UserType } from "@/server/schema/schema";
 
 export default function UserClient() {
   const router = useRouter();
@@ -30,7 +28,7 @@ export default function UserClient() {
   const [error, setError] = useState<string[] | undefined>([]);
 
   const { data: user, isPending: isPendingUser } = trpc.user.detail.useQuery({
-    id: 12,
+    id: 16,
   });
 
   const { data: positions } = trpc.position.list.useQuery();
@@ -57,7 +55,7 @@ export default function UserClient() {
   const { mutate: deleteUser } = trpc.user.delete.useMutation({
     onSuccess: ({ message }) => {
       alert(message);
-      utils.user.invalidate();
+      utils.invalidate();
     },
   });
 
@@ -174,7 +172,7 @@ export default function UserClient() {
                     },
                     {
                       onSuccess: () => {
-                        utils.user.invalidate();
+                        utils.invalidate();
                       },
                     },
                   );

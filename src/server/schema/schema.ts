@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { getEnumKeys } from "@/server/helper";
+import { UserModel } from "@/server/schema/generated/zod-prisma";
 
 export const pagination = z.object({
   page: z.number().min(1),
@@ -71,3 +73,4 @@ const { user, position } = schema;
 export type TPagination = z.infer<typeof pagination>;
 export type UserType = z.infer<typeof user.create>;
 export type PositionType = z.infer<typeof position.create>;
+export const UserKeys = getEnumKeys(UserModel.shape);
