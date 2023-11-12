@@ -16,6 +16,22 @@ export const createUrl = (pathname: string, params: URLSearchParams | ReadonlyUR
   return `${pathname}${queryString}`;
 };
 
+export const createSearchParams = (params: {
+  [key: string]: string | string[];
+}): URLSearchParams => {
+  const searchParams = new URLSearchParams();
+  Object.entries(params).forEach(([key, values]) => {
+    if (Array.isArray(values)) {
+      values.forEach((value) => {
+        searchParams.append(key, value);
+      });
+    } else {
+      searchParams.append(key, values);
+    }
+  });
+  return searchParams;
+};
+
 export const getTodayDate = () => {
   const date = new Date();
   const year = date.getUTCFullYear();
