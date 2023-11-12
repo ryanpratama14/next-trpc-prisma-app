@@ -1,6 +1,6 @@
 "use client";
 
-import { sortBy } from "@/lib/constants";
+import { defaultSort, sortBy } from "@/lib/constants";
 import { createUrl } from "@/lib/utils";
 import { redirect, useRouter, useSearchParams } from "next/navigation";
 import { Fragment } from "react";
@@ -89,7 +89,10 @@ export default function Pagination({
         <select
           value={sort}
           onChange={(e) => {
-            newParams.set("sort", e.target.value);
+            const value = e.target.value;
+            if (value === defaultSort.slug) {
+              newParams.delete("sort");
+            } else newParams.set("sort", value);
             router.push(createUrl("/", newParams));
           }}
         >

@@ -1,7 +1,7 @@
 import { trpcServer } from "./_trpc/serverClient";
 import { formatDateLong } from "@/lib/utils";
 import Pagination from "@/components/Pagination";
-import { sortBy } from "@/lib/constants";
+import { defaultSort, sortBy } from "@/lib/constants";
 import { Fragment } from "react";
 import { PAGINATION_LIMIT } from "@/server/helper";
 
@@ -13,11 +13,11 @@ export default async function Home({ searchParams }: TProps) {
   const {
     page = searchParams.page ?? "1",
     limit = searchParams.limit ?? PAGINATION_LIMIT.toString(),
+    sort = searchParams.sort ?? defaultSort.slug,
     q: search,
-    sort,
   } = searchParams as { [key: string]: string };
 
-  const sorterer = sortBy.find((item) => item.slug === sort);
+  const sorterer = sortBy.find((item) => item.slug === sort) || defaultSort;
 
   const data = await trpcServer.user.list({
     pagination: {
@@ -48,9 +48,9 @@ export default async function Home({ searchParams }: TProps) {
           );
         })}
         <Pagination
-          sort={sort}
-          search={search}
+          sort={sort as string}
           page={page as string}
+          search={search}
           totalPages={data.totalPages}
           hasNextPage={data.hasNextPage}
           hasPrevPage={data.hasPrevPage}
