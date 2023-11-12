@@ -1,6 +1,7 @@
 import { ReadonlyURLSearchParams } from "next/navigation";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { LOCALE_TAG } from "@/server/helper";
 
 export const loadToTop = () => {
   window.scrollTo({
@@ -38,7 +39,7 @@ export const formatDate = (dateString: Date): string => {
 };
 
 export const formatDateLong = (date: Date): string => {
-  return date.toLocaleDateString([], {
+  return date.toLocaleDateString(LOCALE_TAG, {
     year: "numeric",
     month: "long",
     day: "numeric",

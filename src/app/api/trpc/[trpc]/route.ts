@@ -1,6 +1,6 @@
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
-
 import { appRouter } from "@/server/api";
+import { LOCALE_TAG } from "@/server/helper";
 
 const handler = (req: Request) =>
   fetchRequestHandler({
@@ -10,7 +10,7 @@ const handler = (req: Request) =>
     createContext: () => ({}),
     onError: ({ error }) => {
       console.log(
-        `${new Date().toLocaleTimeString([], {
+        `${new Date().toLocaleTimeString(LOCALE_TAG, {
           hour: "2-digit",
           minute: "2-digit",
           second: "2-digit",

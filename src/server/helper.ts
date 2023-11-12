@@ -6,6 +6,8 @@ import { TPagination } from "@/server/schema/schema";
 
 export const PAGINATION_LIMIT = 5;
 
+export const LOCALE_TAG: undefined | string[] = [];
+
 export const MESSAGES_LIST = {
   NOT_FOUND: "Data not found",
   ALREADY_EXISTS: "Data already exists",
