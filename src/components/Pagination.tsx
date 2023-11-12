@@ -27,7 +27,8 @@ export default function Pagination({
   const newParams = new URLSearchParams(searchParams.toString());
 
   if (isInvalidPage) {
-    redirect("/");
+    newParams.delete("page");
+    redirect(createUrl("/", newParams));
   }
 
   return (
