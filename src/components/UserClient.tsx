@@ -8,23 +8,18 @@ import { UserKeys, UserType } from "@/server/schema/schema";
 import { PAGINATION_LIMIT } from "@/server/helper";
 import { sortBy } from "@/lib/constants";
 
-type TProps = {
-  searchParams: { [key: string]: string | string[] | undefined };
-};
-
-export default function UserClient({ searchParams }: TProps) {
+export default function UserClient() {
   const router = useRouter();
   const utils = trpc.useUtils();
+  const searchParams = new URLSearchParams();
   const newParams = new URLSearchParams(searchParams.toString());
 
-  const {
-    page = searchParams.page ?? "1",
-    limit = searchParams.limit ?? PAGINATION_LIMIT.toString(),
-    sort = searchParams.sort ?? [],
-    q: search,
-  } = searchParams as { [key: string]: string };
+  const page = newParams.get("page") ?? "1";
+  const limit = newParams.get("page") ?? PAGINATION_LIMIT.toString();
+  const sort = newParams.get("sort");
+  const search = newParams.get("q") ?? "";
 
-  const sorterer = sortBy.filter((item) => sort.includes(item.slug));
+  const sorterer = sortBy.filter((item) => sort?.includes(item.slug));
 
   const { data, isPending } = trpc.user.list.useQuery({
     pagination: {

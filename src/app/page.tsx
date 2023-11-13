@@ -4,6 +4,7 @@ import Pagination from "@/components/Pagination";
 import { sortBy } from "@/lib/constants";
 import { Fragment } from "react";
 import { PAGINATION_LIMIT } from "@/server/helper";
+import UserClient from "@/components/UserClient";
 
 type TProps = {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -32,7 +33,8 @@ export default async function Home({ searchParams }: TProps) {
 
   return (
     <Fragment>
-      <article className="flex flex-col items-center justify-center w-[50%]">
+      <UserClient />
+      {/* <article className="flex flex-col items-center justify-center w-[50%]">
         {data.data.map((user) => {
           return (
             <section
@@ -55,7 +57,7 @@ export default async function Home({ searchParams }: TProps) {
           hasPrevPage={data.hasPrevPage}
           isInvalidPage={data.isInvalidPage}
         />
-      </article>
+      </article> */}
     </Fragment>
   );
 }

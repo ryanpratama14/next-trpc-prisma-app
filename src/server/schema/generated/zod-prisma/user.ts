@@ -8,6 +8,7 @@ export const UserModel = z.object({
   followers: z.number().int(),
   isActive: z.boolean(),
   registeredAt: z.date(),
+  graduatedDate: z.date(),
   updatedAt: z.date(),
   positionId: z.number().int().nullish(),
 })
