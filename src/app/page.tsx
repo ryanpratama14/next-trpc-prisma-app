@@ -13,11 +13,11 @@ export default async function Home({ searchParams }: TProps) {
   const {
     page = searchParams.page ?? "1",
     limit = searchParams.limit ?? PAGINATION_LIMIT.toString(),
-    sort,
+    sort = searchParams.sort ?? [],
     q: search,
   } = searchParams as { [key: string]: string };
 
-  const sorterer = sortBy?.filter((item) => sort?.includes(item.slug));
+  const sorterer = sortBy.filter((item) => sort.includes(item.slug));
 
   const data = await trpcServer.user.list({
     pagination: {

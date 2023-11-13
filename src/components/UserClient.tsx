@@ -19,6 +19,7 @@ export default function UserClient() {
     pagination: {
       page: parseInt(page),
     },
+    sorting: [],
     params: {
       name: search,
     },
