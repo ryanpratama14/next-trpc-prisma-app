@@ -11,23 +11,25 @@ const order = z.enum(["asc", "desc"]).optional();
 
 export class schema {
   static user = class {
-    static sorting = z.array(
-      z.object({
-        title: z.string(),
-        slug: z.string(),
-        value: z.object({
-          name: order,
-          email: order,
-          registeredAt: order,
-          updatedAt: order,
-          position: z
-            .object({
-              name: order,
-            })
-            .optional(),
+    static sorting = z
+      .array(
+        z.object({
+          title: z.string(),
+          slug: z.string(),
+          value: z.object({
+            name: order,
+            email: order,
+            registeredAt: order,
+            updatedAt: order,
+            position: z
+              .object({
+                name: order,
+              })
+              .optional(),
+          }),
         }),
-      }),
-    );
+      )
+      .optional();
     static list = z.object({
       pagination,
       sorting: this.sorting,

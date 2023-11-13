@@ -54,7 +54,7 @@ export const userRouter = router({
       },
     };
 
-    const orderBy = sorting.map((item) => item.value);
+    const orderBy = sorting?.length ? sorting.map((item) => item.value) : [];
     orderBy.push({ updatedAt: "desc" });
 
     const [data, totalData] = await db.$transaction([
