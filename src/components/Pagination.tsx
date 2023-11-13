@@ -97,7 +97,6 @@ export default function Pagination({
                 } else {
                   newSort = [...sort, item.slug];
                 }
-                const newParams = new URLSearchParams(searchParams);
                 newParams.delete("sort");
                 router.push(createUrl("/", createSearchParams({ sort: newSort }, newParams)));
               }}

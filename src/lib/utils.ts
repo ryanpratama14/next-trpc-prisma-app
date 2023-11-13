@@ -22,7 +22,7 @@ export const createSearchParams = (
   },
   newParams?: URLSearchParams,
 ): URLSearchParams => {
-  const updatedParams = newParams ? newParams : new URLSearchParams();
+  const updatedParams = new URLSearchParams(newParams ? newParams : undefined);
   Object.entries(params).forEach(([key, values]) => {
     if (Array.isArray(values)) {
       values.forEach((value) => {
