@@ -2,27 +2,26 @@
 
 import { useState } from "react";
 import { trpc } from "@/app/_trpc/client";
-import { UserType } from "@/server/schema/schema";
-import { formatDate } from "@/lib/utils";
+import { UserKeys, UserType } from "@/server/schema/schema";
+import { formatDate, getNewDate } from "@/lib/utils";
 
 const initialData: UserType = {
   name: "",
   email: "",
   positionId: undefined,
-  registeredAt: formatDate(new Date()),
+  graduatedDate: formatDate(getNewDate()),
 };
 
-export default function AddUser() {
+export default function CreateUser() {
   const [data, setData] = useState(initialData);
   const { data: positions } = trpc.position.list.useQuery();
-  const { data: user } = trpc.user.detailPrivate.useQuery({ id: 12 });
+  const utils = trpc.useUtils();
 
-  console.log(user);
-
-  const { mutate } = trpc.user.create.useMutation({
+  const { mutate: createUser } = trpc.user.create.useMutation({
     onSuccess: () => {
       setData(initialData);
       alert("User created");
+      utils.user.invalidate();
     },
     onError: (error) => {
       console.log(error.message);
@@ -31,22 +30,19 @@ export default function AddUser() {
     },
   });
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>,
-  ) => {
-    const { name, value } = e.target;
-    setData({
-      ...data,
-      [name]: name !== "positionId" ? value : parseInt(value),
-    });
-  };
+  const handleChange =
+    (name: typeof UserKeys) =>
+    (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
+      const { value } = e.target;
+      setData({ ...data, [name]: name !== "positionId" ? value : parseInt(value) });
+    };
 
   return (
     <article className="flex items-center justify-center">
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          mutate(data);
+          createUser(data);
         }}
         className="flex flex-col gap-4 p-6 rounded-md bg-gray-300 w-[40%]"
       >
@@ -56,20 +52,31 @@ export default function AddUser() {
           placeholder="Name"
           value={data.name}
           className="px-4 py-2 rounded-md"
-          name="name"
           type="text"
-          onChange={handleChange}
+          onChange={handleChange("name")}
         />
         <input
           required
           placeholder="Email"
           value={data.email}
           className="px-4 py-2 rounded-md"
-          name="email"
           type="email"
-          onChange={handleChange}
+          onChange={handleChange("email")}
         />
-        <select onChange={handleChange} name="positionId" value={data.positionId || undefined}>
+        <input
+          required
+          value={data.graduatedDate}
+          className="px-4 py-2 rounded-md"
+          type="date"
+          onChange={handleChange("graduatedDate")}
+        />
+        <select
+          required
+          onChange={handleChange("positionId")}
+          name="positionId"
+          value={data.positionId || undefined}
+        >
+          <option>Select Position</option>
           {positions?.map((position) => {
             return (
               <option key={position.id} value={position.id}>

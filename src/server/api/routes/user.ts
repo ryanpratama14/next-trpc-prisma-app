@@ -40,17 +40,18 @@ export const userRouter = router({
 
   list: publicProcedure.input(schema.user.list).query(async ({ input }) => {
     const { pagination, params, sorting } = input;
+
     const optionalQueries = {
       where: {
         name: { contains: params?.name },
         isActive: params?.isActive,
-        registeredAt: {
-          gte: params?.registeredAt && getStartDate(params.registeredAt),
-          lte: params?.registeredAt && getEndDate(params.registeredAt),
+        graduatedDate: {
+          gte: params?.graduatedDate && getStartDate(params.graduatedDate),
+          lte: params?.graduatedDate && getEndDate(params.graduatedDate),
         },
         email: { contains: params?.email },
         followers: { gte: params?.followers },
-        position: { name: { contains: params?.positionName } },
+        positionId: params?.positionId,
       },
     };
 
@@ -92,7 +93,7 @@ export const userRouter = router({
         name: body.name,
         email: body.email,
         positionId: body.positionId,
-        registeredAt: getNewDate(body.registeredAt),
+        graduatedDate: getNewDate(body.graduatedDate),
         updatedAt: getNewDate(),
       },
     });

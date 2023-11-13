@@ -2,8 +2,8 @@
 
 import { trpc } from "@/app/_trpc/client";
 import { Fragment, useState } from "react";
-import { useRouter } from "next/navigation";
-import { formatDate, createUrl } from "@/lib/utils";
+import { useRouter, useSearchParams } from "next/navigation";
+import { formatDate, createUrl, getNewDate } from "@/lib/utils";
 import { UserKeys, UserType } from "@/server/schema/schema";
 import { PAGINATION_LIMIT } from "@/server/helper";
 import { sortBy } from "@/lib/constants";
@@ -11,13 +11,15 @@ import { sortBy } from "@/lib/constants";
 export default function UserClient() {
   const router = useRouter();
   const utils = trpc.useUtils();
-  const searchParams = new URLSearchParams();
+  const searchParams = useSearchParams();
   const newParams = new URLSearchParams(searchParams.toString());
 
   const page = newParams.get("page") ?? "1";
-  const limit = newParams.get("page") ?? PAGINATION_LIMIT.toString();
-  const sort = newParams.get("sort");
-  const search = newParams.get("q") ?? "";
+  const limit = newParams.get("limit") ?? PAGINATION_LIMIT.toString();
+  const sort = newParams.get("sort") ?? undefined;
+  const search = newParams.get("q") ?? undefined;
+  const graduatedDate = newParams.get("graduatedDate") ?? undefined;
+  const positionId = newParams.get("positionId");
 
   const sorterer = sortBy.filter((item) => sort?.includes(item.slug));
 
@@ -28,6 +30,8 @@ export default function UserClient() {
     },
     sorting: sorterer,
     params: {
+      positionId: positionId ? Number(positionId) : undefined,
+      graduatedDate,
       name: search,
     },
   });
@@ -45,7 +49,7 @@ export default function UserClient() {
     name: "",
     email: "",
     positionId: null,
-    registeredAt: formatDate(new Date()),
+    graduatedDate: formatDate(getNewDate()),
   });
 
   const [userId, setUserId] = useState<number>(0);
@@ -54,6 +58,7 @@ export default function UserClient() {
     onSuccess: (res) => {
       alert(JSON.stringify(res));
       setIsEdit(false);
+      utils.user.invalidate();
     },
     onError: (error) => {
       setError(error?.data?.zodError?.fieldErrors?.body);
@@ -63,7 +68,7 @@ export default function UserClient() {
   const { mutate: deleteUser } = trpc.user.delete.useMutation({
     onSuccess: ({ message }) => {
       alert(message);
-      utils.invalidate();
+      utils.user.invalidate();
     },
   });
 
@@ -118,7 +123,7 @@ export default function UserClient() {
                   <p>Name: {user?.name}</p>
                   <p>Position: {user?.position?.name}</p>
                   <p>Email: {user?.email}</p>
-                  <p>Date: {formatDate(user?.updatedAt)}</p>
+                  <p>Graduated: {formatDate(user?.graduatedDate)}</p>
                   <p>id: {user?.id}</p>
                   <button onClick={() => deleteUser({ id: user.id })}>Delete user</button>
                 </section>
@@ -130,14 +135,12 @@ export default function UserClient() {
                   <button
                     onClick={() => {
                       const prevPage = (Number(page) - 1).toString();
-
                       if (Number(prevPage) === 1) {
                         newParams.delete("page");
                       } else newParams.set("page", prevPage);
-
                       router.push(createUrl("/", newParams));
                     }}
-                    disabled={Number(page) === 1 || data.totalData === 0}
+                    disabled={!data.hasPrevPage}
                     type="button"
                   >
                     Prev Page
@@ -148,7 +151,7 @@ export default function UserClient() {
                       newParams.set("page", nextPage);
                       router.push(createUrl("/", newParams));
                     }}
-                    disabled={Number(page) >= data.totalPages || data.totalData === 0}
+                    disabled={!data.hasNextPage}
                     type="button"
                   >
                     Next Page
@@ -171,17 +174,10 @@ export default function UserClient() {
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
-                  updateUser(
-                    {
-                      id: userId,
-                      body: userById,
-                    },
-                    {
-                      onSuccess: () => {
-                        utils.invalidate();
-                      },
-                    },
-                  );
+                  updateUser({
+                    id: userId,
+                    body: userById,
+                  });
                 }}
                 className="flex flex-col gap-2"
               >
@@ -200,8 +196,8 @@ export default function UserClient() {
                   className="text-black"
                 />
                 <input
-                  onChange={handleChange("registeredAt")}
-                  value={userById.registeredAt}
+                  onChange={handleChange("graduatedDate")}
+                  value={userById.graduatedDate}
                   type="date"
                   className="text-black"
                 />
@@ -236,7 +232,7 @@ export default function UserClient() {
                         name: user.name,
                         email: user.email,
                         positionId: user.positionId,
-                        registeredAt: formatDate(user.registeredAt),
+                        graduatedDate: formatDate(user.graduatedDate),
                       });
                     }
                   }}
@@ -246,7 +242,7 @@ export default function UserClient() {
                 <p>Name: {user?.name}</p>
                 <p>Position: {user?.position?.name}</p>
                 <p>Email: {user?.email}</p>
-                <p>Date: {user?.registeredAt && formatDate(user.registeredAt)}</p>
+                <p>Graduated: {user?.graduatedDate && formatDate(user.graduatedDate)}</p>
                 <p>id: {user?.id}</p>
               </Fragment>
             )}

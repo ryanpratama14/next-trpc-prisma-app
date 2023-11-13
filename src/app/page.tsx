@@ -5,6 +5,7 @@ import { sortBy } from "@/lib/constants";
 import { Fragment } from "react";
 import { PAGINATION_LIMIT } from "@/server/helper";
 import UserClient from "@/components/UserClient";
+import CreateUser from "@/components/CreateUser";
 
 type TProps = {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -16,6 +17,7 @@ export default async function Home({ searchParams }: TProps) {
     limit = searchParams.limit ?? PAGINATION_LIMIT.toString(),
     sort = searchParams.sort ?? [],
     q: search,
+    graduatedDate,
   } = searchParams as { [key: string]: string };
 
   const sorterer = sortBy.filter((item) => sort.includes(item.slug));
@@ -28,12 +30,14 @@ export default async function Home({ searchParams }: TProps) {
     sorting: sorterer,
     params: {
       name: search,
+      graduatedDate: graduatedDate,
     },
   });
 
   return (
     <Fragment>
       <UserClient />
+      <CreateUser />
       {/* <article className="flex flex-col items-center justify-center w-[50%]">
         {data.data.map((user) => {
           return (
@@ -44,7 +48,7 @@ export default async function Home({ searchParams }: TProps) {
               <p>Name: {user.name}</p>
               <p>Position: {user.position?.name}</p>
               <p>Email: {user.email}</p>
-              <p>Date: {formatDateLong(user.updatedAt)}</p>
+              <p>Graduated: {formatDateLong(user.graduatedDate)}</p>
               <p>id: {user.id}</p>
             </section>
           );

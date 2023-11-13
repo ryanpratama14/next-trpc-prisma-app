@@ -39,8 +39,8 @@ export class schema {
           name: z.string().optional(),
           followers: z.number().int().optional(),
           isActive: z.boolean().optional(),
-          registeredAt: z.string().optional(),
-          positionName: z.string().optional(),
+          graduatedDate: z.string().optional(),
+          positionId: z.number().optional(),
         })
         .optional(),
     });
@@ -49,7 +49,7 @@ export class schema {
       name: z.string().min(4),
       email: z.string().email(),
       positionId: z.number().nullish(),
-      registeredAt: z.string(),
+      graduatedDate: z.string(),
     });
 
     static detail = z.object({
