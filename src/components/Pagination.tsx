@@ -84,7 +84,7 @@ export default function Pagination({
         Page {page} / {totalPages}
       </p>
       <section className="flex flex-col">
-        {sortBy.map((item) => {
+        {sortBy?.map((item) => {
           const sort = searchParams.getAll("sort");
           const active = sort.includes(item.slug);
 
