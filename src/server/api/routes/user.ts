@@ -56,7 +56,7 @@ export const userRouter = router({
 
     const [data, totalData] = await db.$transaction([
       db.user.findMany({
-        orderBy: sorting.map((sort) => sort.value),
+        orderBy: [...sorting.map((sort) => sort.value), { updatedAt: "desc" }],
         select: {
           ...prismaExclude("User", ["positionId", "registeredAt"]),
           position: {
