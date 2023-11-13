@@ -24,7 +24,7 @@ export default async function Home({ searchParams }: TProps) {
       page: Number(page),
       limit: Number(limit),
     },
-    sorting: sorterer.length ? sorterer.map((item) => ({ [item.sortKey]: item.value })) : undefined,
+    sorting: sorterer,
     params: {
       name: search,
     },

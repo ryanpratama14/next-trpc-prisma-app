@@ -103,7 +103,7 @@ export default function Pagination({
               className={cn("transition-all", {
                 "text-red-500": active,
               })}
-              key={item.sortKey}
+              key={item.slug}
             >
               {item.title}
             </button>

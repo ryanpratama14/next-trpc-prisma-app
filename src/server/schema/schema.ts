@@ -2,18 +2,35 @@ import { z } from "zod";
 import { getEnumKeys } from "@/server/helper";
 import { UserModel } from "@/server/schema/generated/zod-prisma";
 
-export const pagination = z.object({
+const pagination = z.object({
   page: z.number().min(1),
   limit: z.number().min(1).optional(),
 });
 
-export const sorting = z.array(z.record(z.enum(["asc", "desc"]))).optional();
+const order = z.enum(["asc", "desc"]).optional();
 
 export class schema {
   static user = class {
+    static sorting = z.array(
+      z.object({
+        title: z.string(),
+        slug: z.string(),
+        value: z.object({
+          name: order,
+          email: order,
+          registeredAt: order,
+          updatedAt: order,
+          position: z
+            .object({
+              name: order,
+            })
+            .optional(),
+        }),
+      }),
+    );
     static list = z.object({
       pagination,
-      sorting,
+      sorting: this.sorting,
       params: z
         .object({
           id: z.number().int().optional(),
@@ -73,4 +90,5 @@ const { user, position } = schema;
 export type TPagination = z.infer<typeof pagination>;
 export type UserType = z.infer<typeof user.create>;
 export type PositionType = z.infer<typeof position.create>;
+export type SortBy = z.infer<typeof user.sorting>;
 export const UserKeys = getEnumKeys(UserModel.shape);
