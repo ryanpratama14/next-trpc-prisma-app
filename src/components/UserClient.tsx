@@ -2,24 +2,36 @@
 
 import { trpc } from "@/app/_trpc/client";
 import { Fragment, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { formatDate, createUrl } from "@/lib/utils";
 import { UserKeys, UserType } from "@/server/schema/schema";
+import { PAGINATION_LIMIT } from "@/server/helper";
+import { sortBy } from "@/lib/constants";
 
-export default function UserClient() {
+type TProps = {
+  searchParams: { [key: string]: string | string[] | undefined };
+};
+
+export default function UserClient({ searchParams }: TProps) {
   const router = useRouter();
   const utils = trpc.useUtils();
-  const searchParams = useSearchParams();
   const newParams = new URLSearchParams(searchParams.toString());
 
-  const page = searchParams.get("page") ?? "1";
-  const search = searchParams.get("q") ?? "";
+  const {
+    page = searchParams.page ?? "1",
+    limit = searchParams.limit ?? PAGINATION_LIMIT.toString(),
+    sort = searchParams.sort ?? [],
+    q: search,
+  } = searchParams as { [key: string]: string };
+
+  const sorterer = sortBy.filter((item) => sort.includes(item.slug));
 
   const { data, isPending } = trpc.user.list.useQuery({
     pagination: {
-      page: parseInt(page),
+      page: Number(page),
+      limit: Number(limit),
     },
-    sorting: [],
+    sorting: sorterer,
     params: {
       name: search,
     },
