@@ -14,7 +14,7 @@ export default function Pagination({
   isInvalidPage,
 }: {
   totalPages: number;
-  page: string;
+  page: number;
   search: string;
   hasPrevPage: boolean;
   hasNextPage: boolean;

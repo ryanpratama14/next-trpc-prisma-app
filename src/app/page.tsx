@@ -6,39 +6,41 @@ import { Fragment } from "react";
 import { PAGINATION_LIMIT } from "@/server/helper";
 import UserClient from "@/components/UserClient";
 import CreateUser from "@/components/CreateUser";
+import { SortBy } from "@/server/schema/schema";
 
 type TProps = {
   searchParams: { [key: string]: string | string[] | undefined };
 };
 
 export default async function Home({ searchParams }: TProps) {
-  const {
-    page = searchParams.page ?? "1",
-    limit = searchParams.limit ?? PAGINATION_LIMIT.toString(),
-    sort = searchParams.sort ?? [],
-    q: search,
-    graduatedDate,
-  } = searchParams as { [key: string]: string };
+  const pagination = {
+    page: Number(searchParams.page) || 1,
+    limit: Number(searchParams.limit) || PAGINATION_LIMIT,
+  };
 
-  const sorterer = sortBy.filter((item) => sort.includes(item.slug));
+  const params = {
+    name: searchParams.q as string,
+    graduatedDate: searchParams.graduatedDate as string,
+  };
+
+  const getSorting = () => {
+    const sort = searchParams.sort || [];
+    return {
+      sorting: sort.length ? sortBy.filter((item) => sort.includes(item.slug)) : [],
+    };
+  };
 
   const data = await trpcServer.user.list({
-    pagination: {
-      page: Number(page),
-      limit: Number(limit),
-    },
-    sorting: sorterer,
-    params: {
-      name: search,
-      graduatedDate: graduatedDate,
-    },
+    pagination,
+    ...getSorting(),
+    params,
   });
 
   return (
     <Fragment>
-      <UserClient />
-      <CreateUser />
-      {/* <article className="flex flex-col items-center justify-center w-[50%]">
+      {/* <UserClient />
+      <CreateUser /> */}
+      <article className="flex flex-col items-center justify-center w-[50%]">
         {data.data.map((user) => {
           return (
             <section
@@ -54,14 +56,14 @@ export default async function Home({ searchParams }: TProps) {
           );
         })}
         <Pagination
-          page={page as string}
-          search={search}
+          page={pagination.page}
+          search={params.name}
           totalPages={data.totalPages}
           hasNextPage={data.hasNextPage}
           hasPrevPage={data.hasPrevPage}
           isInvalidPage={data.isInvalidPage}
         />
-      </article> */}
+      </article>
     </Fragment>
   );
 }
