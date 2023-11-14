@@ -36,8 +36,8 @@ export default async function Home({ searchParams }: TProps) {
 
   return (
     <Fragment>
-      {/* <UserClient />
-      <CreateUser /> */}
+      <UserClient />
+      <CreateUser />
       <article className="flex flex-col items-center justify-center w-[50%]">
         {data.data.map((user) => {
           return (

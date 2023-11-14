@@ -32,7 +32,10 @@ export const positionRouter = router({
   }),
 
   list: publicProcedure.query(async () => {
-    return await db.position.findMany({ select: prismaExclude("Position", ["registeredAt"]) });
+    return await db.position.findMany({
+      select: prismaExclude("Position", ["registeredAt"]),
+      orderBy: { name: "asc" },
+    });
   }),
 
   detail: publicProcedure.input(schema.position.detail).query(async ({ input }) => {
