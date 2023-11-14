@@ -25,14 +25,12 @@ export default async function Home({ searchParams }: TProps) {
 
   const getSorting = () => {
     const sort = searchParams.sort || [];
-    return {
-      sorting: sort.length ? sortBy.filter((item) => sort.includes(item.slug)) : [],
-    };
+    return sort.length ? sortBy.filter((item) => sort.includes(item.slug)) : [];
   };
 
   const data = await trpcServer.user.list({
     pagination,
-    ...getSorting(),
+    sorting: getSorting(),
     params,
   });
 
