@@ -40,7 +40,6 @@ export const userRouter = router({
 
   list: publicProcedure.input(schema.user.list).query(async ({ input }) => {
     const { pagination, params, sorting } = input;
-
     const optionalQueries = {
       where: {
         name: { contains: params?.name },

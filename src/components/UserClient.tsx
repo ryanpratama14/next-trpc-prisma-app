@@ -2,12 +2,12 @@
 
 import { api } from "@/app/_trpc/client";
 import { Fragment, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
 import { formatDate, createUrl, getNewDate } from "@/lib/utils";
 import { UserKeys } from "@/server/schema/schema";
 import { PAGINATION_LIMIT } from "@/server/helper";
 import { userSorting } from "@/lib/constants";
-import { UserCreateInput } from "@/server/api/routes/user";
+import { UserCreateInput, UserListInput } from "@/server/api/routes/user";
 
 export default function UserClient() {
   const router = useRouter();
@@ -15,27 +15,27 @@ export default function UserClient() {
   const searchParams = useSearchParams();
   const newParams = new URLSearchParams(searchParams.toString());
 
-  const page = newParams.get("page") ?? "1";
-  const limit = newParams.get("limit") ?? PAGINATION_LIMIT.toString();
-  const sort = newParams.get("sort") ?? undefined;
-  const search = newParams.get("q") ?? undefined;
-  const graduatedDate = newParams.get("graduatedDate") ?? undefined;
-  const positionId = newParams.get("positionId");
+  const getSorting = () => {
+    const sort = newParams.getAll("sort") || [];
+    return sort.length ? userSorting.filter((item) => sort.includes(item.slug)) : [];
+  };
 
-  const sorterer = userSorting.filter((item) => sort?.includes(item.slug));
-
-  const { data, isLoading } = api.user.list.useQuery({
+  const filter: UserListInput = {
     pagination: {
-      page: Number(page),
-      limit: Number(limit),
+      page: Number(newParams.get("page")) || 1,
+      limit: Number(newParams.get("limit")) || PAGINATION_LIMIT,
     },
-    sorting: sorterer,
     params: {
-      positionId: positionId ? Number(positionId) : undefined,
-      graduatedDate,
-      name: search,
+      name: newParams.get("q") || undefined,
+      graduatedDate: newParams.get("graduatedDate") || undefined,
+      positionId: Number(newParams.get("positionId")) || undefined,
     },
-  });
+    sorting: getSorting(),
+  };
+
+  const { page } = filter.pagination;
+
+  const { data, isLoading } = api.user.list.useQuery(filter);
 
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [error, setError] = useState<string[] | undefined>([]);
@@ -77,9 +77,9 @@ export default function UserClient() {
     setUserById({ ...userById, [name]: e.target.value });
   };
 
-  if (Number(page) < 1 || (data && !data.data.length)) {
+  if (data?.isInvalidPage) {
     newParams.delete("page");
-    router.push(createUrl("/", newParams));
+    redirect(createUrl("/", newParams));
   }
 
   return (
@@ -100,10 +100,10 @@ export default function UserClient() {
         }}
       >
         <input
-          key={search}
+          key={filter.params?.name}
           name="search"
           autoComplete="off"
-          defaultValue={search}
+          defaultValue={filter.params?.name}
           className="px-6 py-2 rounded-md border-2 border-gray-300 focus:outline-none"
           placeholder="Search user by name"
         />
