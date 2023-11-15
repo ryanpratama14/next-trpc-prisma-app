@@ -1,4 +1,3 @@
-import { trpcServer } from "./_trpc/serverClient";
 import { formatDateLong } from "@/lib/utils";
 import Pagination from "@/components/Pagination";
 import { userSorting } from "@/lib/constants";
@@ -7,6 +6,7 @@ import { PAGINATION_LIMIT } from "@/server/helper";
 import UserClient from "@/components/UserClient";
 import CreateUser from "@/components/CreateUser";
 import { UserListInput } from "@/server/api/routes/user";
+import { api } from "@/app/_trpc/serverClient";
 
 type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -30,7 +30,7 @@ export default async function Home({ searchParams }: Props) {
     sorting: getSorting(),
   };
 
-  const data = await trpcServer.user.list(filter);
+  const data = await api.user.list(filter);
 
   return (
     <Fragment>

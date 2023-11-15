@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { trpc } from "@/app/_trpc/client";
+import { api } from "@/app/_trpc/client";
 import { UserKeys } from "@/server/schema/schema";
 import { formatDate, getNewDate } from "@/lib/utils";
 import { UserCreateInput } from "@/server/api/routes/user";
@@ -15,10 +15,10 @@ const initialData: UserCreateInput = {
 
 export default function CreateUser() {
   const [data, setData] = useState(initialData);
-  const { data: positions } = trpc.position.list.useQuery();
-  const utils = trpc.useUtils();
+  const { data: positions } = api.position.list.useQuery();
+  const utils = api.useUtils();
 
-  const { mutate: createUser } = trpc.user.create.useMutation({
+  const { mutate: createUser } = api.user.create.useMutation({
     onSuccess: () => {
       setData(initialData);
       alert("User created");

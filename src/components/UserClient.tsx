@@ -1,6 +1,6 @@
 "use client";
 
-import { trpc } from "@/app/_trpc/client";
+import { api } from "@/app/_trpc/client";
 import { Fragment, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formatDate, createUrl, getNewDate } from "@/lib/utils";
@@ -11,7 +11,7 @@ import { UserCreateInput } from "@/server/api/routes/user";
 
 export default function UserClient() {
   const router = useRouter();
-  const utils = trpc.useUtils();
+  const utils = api.useUtils();
   const searchParams = useSearchParams();
   const newParams = new URLSearchParams(searchParams.toString());
 
@@ -24,7 +24,7 @@ export default function UserClient() {
 
   const sorterer = userSorting.filter((item) => sort?.includes(item.slug));
 
-  const { data, isPending } = trpc.user.list.useQuery({
+  const { data, isLoading } = api.user.list.useQuery({
     pagination: {
       page: Number(page),
       limit: Number(limit),
@@ -40,11 +40,11 @@ export default function UserClient() {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [error, setError] = useState<string[] | undefined>([]);
 
-  const { data: user, isPending: isPendingUser } = trpc.user.detail.useQuery({
+  const { data: user, isLoading: isLoadingUser } = api.user.detail.useQuery({
     id: 16,
   });
 
-  const { data: positions } = trpc.position.list.useQuery();
+  const { data: positions } = api.position.list.useQuery();
 
   const [userById, setUserById] = useState<UserCreateInput>({
     name: "",
@@ -55,7 +55,7 @@ export default function UserClient() {
 
   const [userId, setUserId] = useState<number>(0);
 
-  const { mutate: updateUser } = trpc.user.update.useMutation({
+  const { mutate: updateUser } = api.user.update.useMutation({
     onSuccess: (res) => {
       alert(JSON.stringify(res));
       setIsEdit(false);
@@ -66,7 +66,7 @@ export default function UserClient() {
     },
   });
 
-  const { mutate: deleteUser } = trpc.user.delete.useMutation({
+  const { mutate: deleteUser } = api.user.delete.useMutation({
     onSuccess: ({ message }) => {
       alert(message);
       utils.user.invalidate();
@@ -111,7 +111,7 @@ export default function UserClient() {
 
       <section className="flex flex-col gap-4">
         <h1>Users</h1>
-        {isPending ? (
+        {isLoading ? (
           <p>Loading...</p>
         ) : (
           <section className="flex flex-col gap-2">
@@ -167,7 +167,7 @@ export default function UserClient() {
         )}
 
         <h1>User ById</h1>
-        {isPendingUser ? (
+        {isLoadingUser ? (
           <p>Loading user...</p>
         ) : (
           <section className="text-white bg-red-600 p-6 rounded-md flex flex-col gap-1">
