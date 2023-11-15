@@ -113,5 +113,13 @@ export const userRouter = router({
 });
 
 export type UserRouter = typeof userRouter;
-export type UserList = RouterOutputs["user"]["list"]["data"];
+
+// outputs
+export type User = RouterOutputs["user"]["detail"];
+export type UserList = RouterOutputs["user"]["list"];
+
+// inputs
 export type UserListInput = RouterInputs["user"]["list"];
+export type UserListInputSorting = RouterInputs["user"]["list"]["sorting"];
+export type UserCreateInput = RouterInputs["user"]["create"];
+export type UserUpdateInput = RouterInputs["user"]["update"]["body"];

@@ -1,38 +1,36 @@
 import { trpcServer } from "./_trpc/serverClient";
 import { formatDateLong } from "@/lib/utils";
 import Pagination from "@/components/Pagination";
-import { sortBy } from "@/lib/constants";
+import { userSorting } from "@/lib/constants";
 import { Fragment } from "react";
 import { PAGINATION_LIMIT } from "@/server/helper";
 import UserClient from "@/components/UserClient";
 import CreateUser from "@/components/CreateUser";
-import { SortBy } from "@/server/schema/schema";
+import { UserListInput } from "@/server/api/routes/user";
 
-type TProps = {
+type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
 };
 
-export default async function Home({ searchParams }: TProps) {
-  const pagination = {
-    page: Number(searchParams.page) || 1,
-    limit: Number(searchParams.limit) || PAGINATION_LIMIT,
-  };
-
-  const params = {
-    name: searchParams.q as string,
-    graduatedDate: searchParams.graduatedDate as string,
-  };
-
+export default async function Home({ searchParams }: Props) {
   const getSorting = () => {
     const sort = searchParams.sort || [];
-    return sort.length ? sortBy.filter((item) => sort.includes(item.slug)) : [];
+    return sort.length ? userSorting.filter((item) => sort.includes(item.slug)) : [];
   };
 
-  const data = await trpcServer.user.list({
-    pagination,
+  const filter: UserListInput = {
+    pagination: {
+      page: Number(searchParams.page) || 1,
+      limit: Number(searchParams.limit) || PAGINATION_LIMIT,
+    },
+    params: {
+      name: searchParams.q as string,
+      graduatedDate: searchParams.graduatedDate as string,
+    },
     sorting: getSorting(),
-    params,
-  });
+  };
+
+  const data = await trpcServer.user.list(filter);
 
   return (
     <Fragment>
@@ -54,8 +52,8 @@ export default async function Home({ searchParams }: TProps) {
           );
         })}
         <Pagination
-          page={pagination.page}
-          search={params.name}
+          page={filter.pagination.page}
+          search={filter.params?.name}
           totalPages={data.totalPages}
           hasNextPage={data.hasNextPage}
           hasPrevPage={data.hasPrevPage}

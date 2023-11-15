@@ -2,7 +2,7 @@ import { Prisma } from "@prisma/client";
 import { z } from "zod";
 import { TRPCError, type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import { type AppRouter } from "@/server/api/index";
-import { TPagination } from "@/server/schema/schema";
+import { Pagination } from "@/server/schema/schema";
 
 export const PAGINATION_LIMIT = 5;
 
@@ -120,7 +120,7 @@ export const getUrl = () => {
   return getBaseUrl() + "/api/trpc";
 };
 
-export const getPagination = ({ limit = PAGINATION_LIMIT, page }: TPagination) => {
+export const getPagination = ({ limit = PAGINATION_LIMIT, page }: Pagination) => {
   return {
     skip: (page - 1) * limit,
     take: limit,

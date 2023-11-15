@@ -4,9 +4,10 @@ import { trpc } from "@/app/_trpc/client";
 import { Fragment, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formatDate, createUrl, getNewDate } from "@/lib/utils";
-import { UserKeys, UserType } from "@/server/schema/schema";
+import { UserKeys } from "@/server/schema/schema";
 import { PAGINATION_LIMIT } from "@/server/helper";
-import { sortBy } from "@/lib/constants";
+import { userSorting } from "@/lib/constants";
+import { UserCreateInput } from "@/server/api/routes/user";
 
 export default function UserClient() {
   const router = useRouter();
@@ -21,7 +22,7 @@ export default function UserClient() {
   const graduatedDate = newParams.get("graduatedDate") ?? undefined;
   const positionId = newParams.get("positionId");
 
-  const sorterer = sortBy.filter((item) => sort?.includes(item.slug));
+  const sorterer = userSorting.filter((item) => sort?.includes(item.slug));
 
   const { data, isPending } = trpc.user.list.useQuery({
     pagination: {
@@ -45,7 +46,7 @@ export default function UserClient() {
 
   const { data: positions } = trpc.position.list.useQuery();
 
-  const [userById, setUserById] = useState<UserType>({
+  const [userById, setUserById] = useState<UserCreateInput>({
     name: "",
     email: "",
     positionId: null,

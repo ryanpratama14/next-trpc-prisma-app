@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { trpc } from "@/app/_trpc/client";
-import { UserKeys, UserType } from "@/server/schema/schema";
+import { UserKeys } from "@/server/schema/schema";
 import { formatDate, getNewDate } from "@/lib/utils";
+import { UserCreateInput } from "@/server/api/routes/user";
 
-const initialData: UserType = {
+const initialData: UserCreateInput = {
   name: "",
   email: "",
   positionId: undefined,

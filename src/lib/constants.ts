@@ -1,6 +1,6 @@
-import { SortBy } from "@/server/schema/schema";
+import { UserListInputSorting } from "@/server/api/routes/user";
 
-export const sortBy: SortBy = [
+export const userSorting: UserListInputSorting = [
   {
     title: "Name",
     slug: "name-desc",

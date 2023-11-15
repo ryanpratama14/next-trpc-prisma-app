@@ -86,10 +86,5 @@ export class schema {
   };
 }
 
-const { user, position } = schema;
-
-export type TPagination = z.infer<typeof pagination>;
-export type UserType = z.infer<typeof user.create>;
-export type PositionType = z.infer<typeof position.create>;
-export type SortBy = z.infer<typeof user.sorting>;
+export type Pagination = z.infer<typeof pagination>;
 export const UserKeys = getEnumKeys(UserModel.shape);

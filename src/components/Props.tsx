@@ -7,7 +7,7 @@ type TProps = {
 export default function Props({ data }: TProps) {
   return (
     <div>
-      {data?.map((item) => (
+      {data.data?.map((item) => (
         <></>
       ))}
     </div>

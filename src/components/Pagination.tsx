@@ -1,6 +1,6 @@
 "use client";
 
-import { sortBy } from "@/lib/constants";
+import { userSorting } from "@/lib/constants";
 import { cn, createSearchParams, createUrl } from "@/lib/utils";
 import { redirect, useRouter, useSearchParams } from "next/navigation";
 import { Fragment } from "react";
@@ -15,7 +15,7 @@ export default function Pagination({
 }: {
   totalPages: number;
   page: number;
-  search: string;
+  search?: string;
   hasPrevPage: boolean;
   hasNextPage: boolean;
   isInvalidPage: boolean;
@@ -84,7 +84,7 @@ export default function Pagination({
         Page {page} / {totalPages}
       </p>
       <section className="flex flex-col">
-        {sortBy.map((item) => {
+        {userSorting.map((item) => {
           const sort = searchParams.getAll("sort");
           const active = sort.includes(item.slug);
 
