@@ -32,8 +32,7 @@ export default function CreateUser() {
   });
 
   const handleChange =
-    (name: typeof UserKeys) =>
-    (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
+    (name: typeof UserKeys) => (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
       const { value } = e.target;
       setData({ ...data, [name]: name !== "positionId" ? value : parseInt(value) });
     };
@@ -71,12 +70,7 @@ export default function CreateUser() {
           type="date"
           onChange={handleChange("graduatedDate")}
         />
-        <select
-          required
-          onChange={handleChange("positionId")}
-          name="positionId"
-          value={data.positionId || undefined}
-        >
+        <select required onChange={handleChange("positionId")} name="positionId" value={data.positionId || undefined}>
           <option>Select Position</option>
           {positions?.map((position) => {
             return (
