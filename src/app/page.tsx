@@ -39,10 +39,7 @@ export default async function Home({ searchParams }: Props) {
       <article className="flex flex-col items-center justify-center w-[50%]">
         {data.data.map((user) => {
           return (
-            <section
-              key={user.id}
-              className="text-white bg-red-600 p-6 rounded-md flex flex-col gap-1"
-            >
+            <section key={user.id} className="text-white bg-red-600 p-6 rounded-md flex flex-col gap-1">
               <p>Name: {user.name}</p>
               <p>Position: {user.position?.name}</p>
               <p>Email: {user.email}</p>

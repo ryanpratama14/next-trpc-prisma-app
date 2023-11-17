@@ -17,10 +17,7 @@ export const MESSAGES_LIST = {
 
 type A<T extends string> = T extends `${infer U}ScalarFieldEnum` ? U : never;
 type Entity = A<keyof typeof Prisma>;
-type Keys<T extends Entity> = Extract<
-  keyof (typeof Prisma)[keyof Pick<typeof Prisma, `${T}ScalarFieldEnum`>],
-  string
->;
+type Keys<T extends Entity> = Extract<keyof (typeof Prisma)[keyof Pick<typeof Prisma, `${T}ScalarFieldEnum`>], string>;
 
 export const prismaExclude = <T extends Entity, K extends Keys<T>>(type: T, omit: K[]) => {
   type Key = Exclude<Keys<T>, K>;
@@ -36,7 +33,7 @@ export const prismaExclude = <T extends Entity, K extends Keys<T>>(type: T, omit
 
 export const removeFieldsFromArray = <T extends Record<string, any>, K extends keyof T>(
   objects: Array<T>,
-  fieldsToRemove: K[],
+  fieldsToRemove: K[]
 ): Array<Omit<T, K>> => {
   return objects.map((obj) => {
     const updatedObj = structuredClone(obj);
@@ -49,7 +46,7 @@ export const removeFieldsFromArray = <T extends Record<string, any>, K extends k
 
 export const removeFieldsFromObject = <T extends Record<string, any>, K extends keyof T>(
   object: T,
-  fieldsToRemove: K[],
+  fieldsToRemove: K[]
 ): Omit<T, K> => {
   const updatedObj = structuredClone(object);
   for (const field of fieldsToRemove) {
@@ -58,18 +55,14 @@ export const removeFieldsFromObject = <T extends Record<string, any>, K extends 
   return updatedObj;
 };
 
-export const mergeZodSchema = <T extends Entity>(
-  entity: T,
-): z.ZodObject<Record<Keys<T>, z.ZodString>, "strip"> => {
-  const entityFields: Keys<T>[] = Object.keys(
-    (Prisma as any)[`${entity}ScalarFieldEnum`],
-  ) as Keys<T>[];
+export const mergeZodSchema = <T extends Entity>(entity: T): z.ZodObject<Record<Keys<T>, z.ZodString>, "strip"> => {
+  const entityFields: Keys<T>[] = Object.keys((Prisma as any)[`${entity}ScalarFieldEnum`]) as Keys<T>[];
 
   const schema = entityFields.reduce((schema, field) => {
     return schema.merge(
       z.object({
         [field]: z.string().optional(),
-      }),
+      })
     );
   }, z.object({}));
 
@@ -93,9 +86,7 @@ export const getZodKeys = (schema: z.ZodType): string[] => {
   return [];
 };
 
-export const getZodEnum = <K extends string>(
-  obj: Record<K, unknown>,
-): z.ZodOptional<z.ZodEnum<[K, ...K[]]>> => {
+export const getZodEnum = <K extends string>(obj: Record<K, unknown>): z.ZodOptional<z.ZodEnum<[K, ...K[]]>> => {
   const [firstKey, ...otherKeys] = Object.keys(obj) as K[];
   return z.enum([firstKey!, ...otherKeys]).optional();
 };
@@ -127,11 +118,7 @@ export const getPagination = ({ limit = PAGINATION_LIMIT, page }: Pagination) =>
   };
 };
 
-export const getPaginationData = (
-  totalData: number,
-  limit: number = PAGINATION_LIMIT,
-  page: number,
-) => {
+export const getPaginationData = (totalData: number, limit: number = PAGINATION_LIMIT, page: number) => {
   const totalPages = Math.ceil(totalData / limit) || 1;
   const start = (page - 1) * limit;
   const end = start + limit;
