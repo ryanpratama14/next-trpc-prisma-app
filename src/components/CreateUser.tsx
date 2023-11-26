@@ -34,7 +34,7 @@ export default function CreateUser() {
   const handleChange =
     (name: typeof UserKeys) => (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
       const { value } = e.target;
-      setData({ ...data, [name]: name !== "positionId" ? value : parseInt(value) });
+      setData({ ...data, [name]: value });
     };
 
   return (

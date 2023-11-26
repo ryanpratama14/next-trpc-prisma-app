@@ -18,12 +18,12 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id            Int       @id @default(autoincrement()) // unique
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
   email         String    @unique // unique
   name          String
   followers     Int       @default(0)
@@ -32,18 +32,18 @@ model User {
   graduatedDate DateTime  @default(now())
   updatedAt     DateTime  @default(now())
   position      Position? @relation(fields: [positionId], references: [id])
-  positionId    Int?
+  positionId    String?   @db.ObjectId
 }
 
 model Position {
-  id           Int      @id @default(autoincrement())
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
   name         String   @unique
   registeredAt DateTime @default(now())
   User         User[]
 }
 
 model Product {
-  id           Int      @id @default(autoincrement()) // unique
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
   name         String   @unique // unique
   price        Float    @default(0)
   registeredAt DateTime @default(now())

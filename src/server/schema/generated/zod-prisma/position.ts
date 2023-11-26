@@ -2,7 +2,7 @@ import * as z from "zod"
 import { CompleteUser, RelatedUserModel } from "./index"
 
 export const PositionModel = z.object({
-  id: z.number().int(),
+  id: z.string(),
   name: z.string(),
   registeredAt: z.date(),
 })

@@ -2,7 +2,7 @@ import * as z from "zod"
 import { CompletePosition, RelatedPositionModel } from "./index"
 
 export const UserModel = z.object({
-  id: z.number().int(),
+  id: z.string(),
   email: z.string(),
   name: z.string(),
   followers: z.number().int(),
@@ -10,7 +10,7 @@ export const UserModel = z.object({
   registeredAt: z.date(),
   graduatedDate: z.date(),
   updatedAt: z.date(),
-  positionId: z.number().int().nullish(),
+  positionId: z.string().nullish(),
 })
 
 export interface CompleteUser extends z.infer<typeof UserModel> {

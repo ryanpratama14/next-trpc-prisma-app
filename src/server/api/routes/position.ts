@@ -8,7 +8,7 @@ import {
 import { schema } from "@/server/schema/schema";
 import { publicProcedure, router } from "@/server/api/trpc";
 
-const getPositionById = async (id: number) => {
+const getPositionById = async (id: string) => {
   const data = await db.position.findUnique({
     where: { id },
     select: prismaExclude("Position", ["registeredAt", "id"]),

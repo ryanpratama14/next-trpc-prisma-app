@@ -13,7 +13,7 @@ import {
   throwDataExistsError,
 } from "@/server/helper";
 
-const getUserById = async (id: number) => {
+const getUserById = async (id: string) => {
   const data = await db.user.findUnique({
     where: { id },
     include: { position: true },

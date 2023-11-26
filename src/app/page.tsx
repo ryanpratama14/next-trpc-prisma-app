@@ -32,11 +32,30 @@ export default async function Home({ searchParams }: Props) {
 
   const data = await api.user.list(filter);
 
+  const addPosition = async (formData: FormData) => {
+    "use server";
+    const name = formData.get("positionName") as string;
+    await api.position.create({ name });
+  };
+
   return (
     <Fragment>
-      <UserClient />
-      <CreateUser />
-      <article className="flex flex-col items-center justify-center w-[50%]">
+      {/* <UserClient />
+      <CreateUser /> */}
+      <article className="flex flex-col justify-center items-center w-full">
+        <h1>Add Position</h1>
+        <form className="flex flex-col gap-2" action={addPosition}>
+          <input
+            placeholder="Goalkeeper..."
+            className="border-2 border-gray-500 px-4 py-2 rounded-md w-full"
+            name="positionName"
+            type="text"
+            required
+          />
+          <button type="submit">Add Position</button>
+        </form>
+      </article>
+      <article className="flex flex-col items-center justify-center w-full">
         {data.data.map((user) => {
           return (
             <section key={user.id} className="text-white bg-red-600 p-6 rounded-md flex flex-col gap-1">

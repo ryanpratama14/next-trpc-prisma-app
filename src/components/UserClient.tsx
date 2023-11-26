@@ -28,7 +28,7 @@ export default function UserClient() {
     params: {
       name: newParams.get("q") || undefined,
       graduatedDate: newParams.get("graduatedDate") || undefined,
-      positionId: Number(newParams.get("positionId")) || undefined,
+      positionId: newParams.get("positionId") || undefined,
     },
     sorting: getSorting(),
   };
@@ -41,7 +41,7 @@ export default function UserClient() {
   const [error, setError] = useState<string[] | undefined>([]);
 
   const { data: user, isLoading: isLoadingUser } = api.user.detail.useQuery({
-    id: 16,
+    id: "656331dd246b331386624ab0",
   });
 
   const { data: positions } = api.position.list.useQuery();
@@ -53,7 +53,7 @@ export default function UserClient() {
     graduatedDate: formatDate(getNewDate()),
   });
 
-  const [userId, setUserId] = useState<number>(0);
+  const [userId, setUserId] = useState<string>("");
 
   const { mutate: updateUser } = api.user.update.useMutation({
     onSuccess: (res) => {
@@ -73,9 +73,10 @@ export default function UserClient() {
     },
   });
 
-  const handleChange = (name: typeof UserKeys) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUserById({ ...userById, [name]: e.target.value });
-  };
+  const handleChange =
+    (name: typeof UserKeys) => (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
+      setUserById({ ...userById, [name]: e.target.value });
+    };
 
   if (data?.isInvalidPage) {
     newParams.delete("page");
@@ -199,12 +200,7 @@ export default function UserClient() {
                   type="date"
                   className="text-black"
                 />
-                <select
-                  onChange={(e) => {
-                    setUserById({ ...userById, positionId: parseInt(e.target.value) });
-                  }}
-                  value={userById.positionId || undefined}
-                >
+                <select onChange={handleChange("positionId")} value={userById.positionId || undefined}>
                   {positions?.map((position) => {
                     return (
                       <option key={position.id} value={position.id}>

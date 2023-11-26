@@ -34,13 +34,13 @@ export class schema {
       sorting: this.sorting,
       params: z
         .object({
-          id: z.number().int().optional(),
+          id: z.string().optional(),
           email: z.string().optional(),
           name: z.string().optional(),
           followers: z.number().int().optional(),
           isActive: z.boolean().optional(),
           graduatedDate: z.string().optional(),
-          positionId: z.number().optional(),
+          positionId: z.string().optional(),
         })
         .optional(),
     });
@@ -48,12 +48,12 @@ export class schema {
     static create = z.object({
       name: z.string().min(4),
       email: z.string().email(),
-      positionId: z.number().nullish(),
+      positionId: z.string().nullish(),
       graduatedDate: z.string(),
     });
 
     static detail = z.object({
-      id: z.number(),
+      id: z.string(),
     });
 
     static update = z.object({
@@ -76,7 +76,7 @@ export class schema {
     });
 
     static detail = z.object({
-      id: z.number(),
+      id: z.string(),
     });
 
     static update = z.object({

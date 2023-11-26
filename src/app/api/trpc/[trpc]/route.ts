@@ -8,13 +8,13 @@ const handler = (req: Request) =>
     req,
     router: appRouter,
     createContext: () => ({}),
-    onError: ({ error }) => {
-      console.log(
+    onError: ({ error, path }) => {
+      console.error(
         `${new Date().toLocaleTimeString(LOCALE_TAG, {
           hour: "2-digit",
           minute: "2-digit",
           second: "2-digit",
-        })} ${error}`,
+        })} ❌ tRPC failed on ${path ?? "<no-path>"}: ${error.message}`
       );
     },
   });
