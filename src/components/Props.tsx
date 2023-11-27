@@ -9,6 +9,7 @@ export default function Props({ data }: TProps) {
     <div>
       {data.data?.map((item) => (
         <></>
+      
       ))}
     </div>
   );
