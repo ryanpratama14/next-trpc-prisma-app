@@ -12,6 +12,7 @@ import {
   throwNotFoundError,
   throwDataExistsError,
 } from "@/server/helper";
+import { Prisma } from "@prisma/client";
 
 const getUserById = async (id: string) => {
   const data = await db.user.findUnique({
@@ -42,7 +43,10 @@ export const userRouter = router({
     const { pagination, params, sorting } = input;
     const optionalQueries = {
       where: {
-        name: { contains: params?.name },
+        name: {
+          mode: "insensitive" as Prisma.QueryMode,
+          contains: params?.name,
+        },
         isActive: params?.isActive,
         graduatedDate: {
           gte: params?.graduatedDate && getStartDate(params.graduatedDate),
