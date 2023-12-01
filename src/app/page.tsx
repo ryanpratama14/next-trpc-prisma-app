@@ -7,6 +7,8 @@ import UserClient from "@/components/UserClient";
 import CreateUser from "@/components/CreateUser";
 import { UserListInput } from "@/server/api/routes/user";
 import { api } from "@/app/_trpc/serverClient";
+import { revalidatePath } from "next/cache";
+import { useFormStatus } from "react-dom";
 
 type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -36,14 +38,23 @@ export default async function Home({ searchParams }: Props) {
     "use server";
     const name = formData.get("positionName") as string;
     await api.position.create({ name });
+    revalidatePath("/");
   };
+
+  const positions = await api.position.list();
 
   return (
     <Fragment>
       {/* <UserClient />
       <CreateUser /> */}
       <article className="flex flex-col justify-center items-center w-full">
-        <h1>Add Position</h1>
+        {/* POSITIONS LIST */}
+        {positions.map((item) => (
+          <p key={item.id}>{item.name}</p>
+        ))}
+
+        {/* ADD POSITION */}
+        <h1 className="mt-12">Add Position</h1>
         <form className="flex flex-col gap-2" action={addPosition}>
           <input
             placeholder="Goalkeeper..."
@@ -52,10 +63,12 @@ export default async function Home({ searchParams }: Props) {
             type="text"
             required
           />
-          <button type="submit">Add Position</button>
+          <button className="p-2 transition-all bg-green-600 hover:bg-green-700 text-white rounded-md" type="submit">
+            Add
+          </button>
         </form>
       </article>
-      <article className="flex flex-col items-center justify-center w-full">
+      {/* <article className="flex flex-col items-center justify-center w-full">
         {data.data.map((user) => {
           return (
             <section key={user.id} className="text-white bg-red-600 p-6 rounded-md flex flex-col gap-1">
@@ -75,7 +88,7 @@ export default async function Home({ searchParams }: Props) {
           hasPrevPage={data.hasPrevPage}
           isInvalidPage={data.isInvalidPage}
         />
-      </article>
+      </article> */}
     </Fragment>
   );
 }
