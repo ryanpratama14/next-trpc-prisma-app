@@ -68,7 +68,7 @@ export default async function Home({ searchParams }: Props) {
           </button>
         </form>
       </article>
-      {/* <article className="flex flex-col items-center justify-center w-full">
+      <article className="flex flex-col items-center justify-center w-full">
         {data.data.map((user) => {
           return (
             <section key={user.id} className="text-white bg-red-600 p-6 rounded-md flex flex-col gap-1">
@@ -88,7 +88,7 @@ export default async function Home({ searchParams }: Props) {
           hasPrevPage={data.hasPrevPage}
           isInvalidPage={data.isInvalidPage}
         />
-      </article> */}
+      </article>
     </Fragment>
   );
 }
