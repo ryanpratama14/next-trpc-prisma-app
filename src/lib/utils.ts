@@ -20,7 +20,7 @@ export const createSearchParams = (
   params: {
     [key: string]: string | string[];
   },
-  newParams?: URLSearchParams,
+  newParams?: URLSearchParams
 ): URLSearchParams => {
   const updatedParams = new URLSearchParams(newParams);
   Object.entries(params).forEach(([key, values]) => {
@@ -48,16 +48,16 @@ export const getNewDate = (dateString?: string): Date => {
   return new Date();
 };
 
-export const getStartDate = (date: string): string => {
+export const getStartDate = (date: string): Date => {
   const updatedDate = new Date(date);
   updatedDate.setUTCHours(0, 0, 0, 0);
-  return updatedDate.toISOString();
+  return updatedDate;
 };
 
-export const getEndDate = (date: string): string => {
+export const getEndDate = (date: string): Date => {
   const updatedDate = new Date(date);
   updatedDate.setUTCHours(23, 59, 59, 999);
-  return updatedDate.toISOString();
+  return updatedDate;
 };
 
 export const formatDate = (dateString: Date): string => {
